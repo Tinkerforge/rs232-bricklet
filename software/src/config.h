@@ -42,19 +42,34 @@
 
 #define BRICKLET_DEVICE_IDENTIFIER 254
 
+#define PIN_NIRQ   (BS->pin1_ad)
+#define PIN_NRESET (BS->pin2_da)
+
 #define LOGGING_LEVEL LOGGING_DEBUG
 #define DEBUG_BRICKLET 0
 
 #define INVOCATION_IN_BRICKLET_CODE
 
+#define BUFFER_SIZE 100
+
 typedef struct {
-	char in[100];
+	char in[BUFFER_SIZE];
 	uint8_t in_start;
 	uint8_t in_end;
 
-	char out[100];
+	char out[BUFFER_SIZE];
 	uint8_t out_start;
 	uint8_t out_end;
+
+	bool in_sync;
+	bool callback_enabled;
+
+	uint8_t baudrate;
+	uint8_t parity;
+	uint8_t stopbits;
+	uint8_t wordlength;
+	uint8_t hardware_flowcontrol;
+	uint8_t software_flowcontrol;
 } BrickContext;
 
 #endif
