@@ -344,14 +344,18 @@ void write(const ComType com, const Write *data) {
 			BC->in_start = (BC->in_start + 1) % BUFFER_SIZE;
 		}
 	}
+
+	BA->com_return_setter(com, data);
 }
 
 void enable_callback(const ComType com, const EnableCallback *data) {
 	BC->callback_enabled = true;
+	BA->com_return_setter(com, data);
 }
 
 void disable_callback(const ComType com, const DisableCallback *data) {
 	BC->callback_enabled = false;
+	BA->com_return_setter(com, data);
 }
 
 void is_callback_enabled(const ComType com, const IsCallbackEnabled *data) {
@@ -383,6 +387,8 @@ void set_configuration(const ComType com, const SetConfiguration *data) {
 	BC->software_flowcontrol = data->software_flowcontrol;
 	write_configuration_to_eeprom();
 	sc16is740_reconfigure();
+
+	BA->com_return_setter(com, data);
 }
 
 void get_configuration(const ComType com, const GetConfiguration *data) {
