@@ -30,7 +30,7 @@ $rs232->enable_callback();
 
 # Convert string to char array with length 60, as needed by API
 my @message = split("", "test\n");
-my @arr = (' ') x 60;
+my @arr = ('\0') x 60;
 for my $i (0..@message-1) {
 	$arr[$i] = $message[$i];
 }
