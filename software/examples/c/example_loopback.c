@@ -7,6 +7,9 @@
 #define PORT 4223
 #define UID "XYZ" // Change to your UID
 
+// In this program we connect RX to TX and to receive
+// the messages that we are sending
+
 // Callback function for read callback
 void cb_read(char *message, uint8_t length, void *user_data) {
 	(void)user_data; // avoid unused parameter warning
