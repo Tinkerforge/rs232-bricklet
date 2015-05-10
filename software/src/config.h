@@ -70,6 +70,8 @@ typedef struct {
 	uint8_t wordlength;
 	uint8_t hardware_flowcontrol;
 	uint8_t software_flowcontrol;
+
+	bool current_rxtx;
 } BrickContext;
 
 #endif

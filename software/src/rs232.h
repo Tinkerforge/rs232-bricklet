@@ -51,6 +51,11 @@ typedef struct {
 
 typedef struct {
 	MessageHeader header;
+	uint8_t written;
+} __attribute__((__packed__)) WriteReturn;
+
+typedef struct {
+	MessageHeader header;
 } __attribute__((__packed__)) Read;
 
 typedef struct {
@@ -127,6 +132,7 @@ void get_configuration(const ComType com, const GetConfiguration *data);
 #define I2C_INTERNAL_ADDRESS_IIR 0x02
 #define I2C_INTERNAL_ADDRESS_LCR 0x03
 #define I2C_INTERNAL_ADDRESS_LSR 0x05
+#define I2C_INTERNAL_ADDRESS_TXLVL 0x08
 #define I2C_INTERNAL_ADDRESS_RXLVL 0x09
 
 #define I2C_INTERNAL_ADDRESS_DLL 0x00

@@ -128,13 +128,10 @@ void sc16is740_reconfigure(void) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		BA->bricklet_select(BS->port - 'a');
 
-		// Enable TCR and TLR
-		sc16is740_write_register(I2C_INTERNAL_ADDRESS_MCR, 1 << 2);
-
 		// Write 0xBF to LCR to be able to access EFR
 		sc16is740_write_register(I2C_INTERNAL_ADDRESS_LCR, 0xBF);
 		// Enable or Disable Hardware Flow Control
-		sc16is740_write_register(I2C_INTERNAL_ADDRESS_EFR, hardware_flowcontrol[BC->hardware_flowcontrol] | (1 << 4) | 0b1010);
+		sc16is740_write_register(I2C_INTERNAL_ADDRESS_EFR, hardware_flowcontrol[BC->hardware_flowcontrol] | software_flowcontrol[BC->software_flowcontrol]);
 
 		// Configure UART
 		uint8_t lcr = stopbits[BC->stopbits-1] | parities[BC->parity] | wordlength[BC->wordlength-5];
@@ -188,6 +185,7 @@ void constructor(void) {
 	BC->wordlength = 8;
 	BC->hardware_flowcontrol = 0;
 	BC->software_flowcontrol = 0;
+	BC->current_rxtx = false;
 
 	read_configuration_from_eeprom();
 	sc16is740_reset();
@@ -249,25 +247,27 @@ void tick(const uint8_t tick_type) {
 		if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 			BA->bricklet_select(BS->port - 'a');
 
-			uint8_t rxtxdone = 0;
-			do {
-				uint8_t lsr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LSR);
-
-				if((lsr & SC16IS740_LSR_DATA_IN_RECEIVER) && (size_out() < (BUFFER_SIZE-1) )) {
+			if(BC->current_rxtx) {
+				uint8_t rxlvl = sc16is740_read_register(I2C_INTERNAL_ADDRESS_RXLVL);
+				while((rxlvl > 0) && (size_out() < (BUFFER_SIZE-1) )) {
 					new_char_out(sc16is740_read_register(I2C_INTERNAL_ADDRESS_RHR));
-				} else {
-					rxtxdone |= (1 << 0);
+					rxlvl--;
 				}
-
-				if((lsr & SC16IS740_LSR_THR_IS_EMPTY) && (size_in() > 0)) {
+				BC->current_rxtx = false;
+			} else {
+				// Use txlvl - 1 here, there may be a byte free in the FIFO, but the
+				// THR is already full. In this case we would get an overflow if we
+				// would write again!
+				int8_t txlvl = sc16is740_read_register(I2C_INTERNAL_ADDRESS_TXLVL) - 1;
+				while((txlvl > 0) && (size_in() > 0)) {
 					char c;
 					if(get_char_in(&c)) {
 						sc16is740_write_register(I2C_INTERNAL_ADDRESS_THR, c);
 					}
-				} else {
-					rxtxdone |= (1 << 1);
+					txlvl--;
 				}
-			} while(rxtxdone != ((1 << 0) | (1 << 1)));
+				BC->current_rxtx = true;
+			}
 
 			BA->bricklet_deselect(BS->port - 'a');
 			BA->mutex_give(*BA->mutex_twi_bricklet);
@@ -279,7 +279,7 @@ void tick(const uint8_t tick_type) {
 		if(BC->callback_enabled && length > 0) {
 			ReadCallback rc;
 			BA->com_make_default_header(&rc, BS->uid, sizeof(ReadCallback), FID_READ_CALLBACK);
-			rc.length = length;
+			rc.length = MIN(length, MESSAGE_LENGTH);
 
 			for(uint8_t i = 0; i < rc.length; i++) {
 				rc.message[i] = BC->out[BC->out_start];
@@ -315,7 +315,7 @@ void read(const ComType com, const Read *data) {
 
 	rr.header         = data->header;
 	rr.header.length  = sizeof(ReadReturn);
-	rr.length         = size_out();
+	rr.length         = MIN(size_out(), MESSAGE_LENGTH);
 
 	for(uint8_t i = 0; i < rr.length; i++) {
 		rr.message[i] = BC->out[BC->out_start];
@@ -330,22 +330,23 @@ void read(const ComType com, const Read *data) {
 }
 
 void write(const ComType com, const Write *data) {
-	if((data->length > MESSAGE_LENGTH) || (size_in() + data->length >= BUFFER_SIZE))  {
-		BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_INVALID_PARAMETER, com);
-		return;
-	}
+	uint8_t length = MIN(data->length, MESSAGE_LENGTH);
+	uint8_t i;
+	for(i = 0; i < length; i++) {
+		if(((BC->in_end + 1) % BUFFER_SIZE) == BC->in_start) {
+			break;
+		}
 
-	for(uint8_t i = 0; i < data->length; i++) {
 		BC->in[BC->in_end] = data->message[i];
 		BC->in_end = (BC->in_end + 1) % BUFFER_SIZE;
-
-		// Overflow handling, this should not be reachable!
-		if(BC->in_end == BC->in_start) {
-			BC->in_start = (BC->in_start + 1) % BUFFER_SIZE;
-		}
 	}
 
-	BA->com_return_setter(com, data);
+	WriteReturn wr;
+	wr.header        = data->header;
+	wr.header.length = sizeof(WriteReturn);
+	wr.written       = i;
+
+	BA->send_blocking_with_timeout(&wr, sizeof(WriteReturn), com);
 }
 
 void enable_callback(const ComType com, const EnableCallback *data) {
