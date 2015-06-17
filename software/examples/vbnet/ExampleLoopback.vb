@@ -10,15 +10,15 @@ Module ExampleCallback
     Const UID As String = "XYZ" ' Change to your UID
 
     Function StringToCharArray(ByVal message As string) As Char()
-		Dim arr As Char() = message.ToCharArray()
-		ReDim Preserve arr(60)
+        Dim arr As Char() = message.ToCharArray()
+        ReDim Preserve arr(60)
 
-		Return arr
+        Return arr
     End Function
 
     ' Callback function for read callback
     Sub ReadCB(ByVal sender As BrickletRS232, ByVal message As Char(), ByVal length As Byte)
-		Dim str as String = new String(message)
+        Dim str as String = new String(message)
         System.Console.WriteLine("message (length: {0}): '{1}'", length, str)
     End Sub
 
@@ -31,10 +31,10 @@ Module ExampleCallback
 
         ' Register read callback to function ReadCB
         AddHandler rs232.ReadCallback, AddressOf ReadCB
-		rs232.EnableCallback()
+        rs232.EnableReadCallback()
 
-		rs232.Write(StringToCharArray("test"), 4)
-		
+        rs232.Write(StringToCharArray("test"), 4)
+
         System.Console.WriteLine("Press key to exit")
         System.Console.ReadLine()
         ipcon.Disconnect()

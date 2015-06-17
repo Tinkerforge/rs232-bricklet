@@ -31,7 +31,7 @@ rs232.register_callback(BrickletRS232::CALLBACK_READ_CALLBACK) do |message, leng
   puts "Message (length #{length}): #{message.join('')}"
 end
 
-rs232.enable_callback
+rs232.enable_read_callback
 
 message = "test"
 rs232.write string_to_char_array(message), message.length

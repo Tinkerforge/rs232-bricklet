@@ -4,7 +4,7 @@
 # change to your UID
 uid=XYZ
 
-tinkerforge call rs232-bricklet $uid enable-callback
+tinkerforge call rs232-bricklet $uid enable-read-callback
 
 # We use 4 characters and fill the rest up to reach a total 
 # of 60 chars, as required by the API.

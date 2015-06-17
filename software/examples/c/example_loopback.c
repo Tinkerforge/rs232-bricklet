@@ -38,7 +38,7 @@ int main() {
 	                        RS232_CALLBACK_READ_CALLBACK,
 	                        (void *)cb_read,
 	                        NULL);
-	rs232_enable_callback(&rs232);
+	rs232_enable_read_callback(&rs232);
 	rs232_write(&rs232, "test\n", 5);
 
 	printf("Press key to exit\n");

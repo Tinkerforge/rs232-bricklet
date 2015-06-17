@@ -35,7 +35,7 @@ public class ExampleLoopback {
 			}
 		});
 
-		rs232.enableCallback();
+		rs232.enableReadCallback();
 		rs232.write(stringToCharArray("test\n"), (short)5);
 
 		System.out.println("Press key to exit"); System.in.read();

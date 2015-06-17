@@ -34,7 +34,7 @@ class Example
 
 		// Register read callback to function ReadCB
 		rs232.ReadCallback += ReadCB;
-		rs232.EnableCallback();
+		rs232.EnableReadCallback();
 
 		rs232.Write(StringToCharArray("test\n"), 5);
 

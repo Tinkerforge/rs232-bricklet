@@ -26,7 +26,7 @@ $ipcon->connect(&HOST, &PORT); # Connect to brickd
 
 # Register read callback to function cb_read
 $rs232->register_callback($rs232->CALLBACK_READ_CALLBACK, 'cb_read');
-$rs232->enable_callback();
+$rs232->enable_read_callback();
 
 # Convert string to char array with length 60, as needed by API
 my @message = split("", "test\n");

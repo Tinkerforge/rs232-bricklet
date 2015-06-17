@@ -19,7 +19,7 @@ ipcon.connect(HOST, PORT,
 
 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
     function(connectReason) {
-        rs232.enableCallback();
+        rs232.enableReadCallback();
 
         message = 'test\n';
 

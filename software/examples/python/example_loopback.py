@@ -29,7 +29,7 @@ if __name__ == "__main__":
     # Don't use device before ipcon is connected
 
     rs232.register_callback(rs232.CALLBACK_READ_CALLBACK, cb_read)
-    rs232.enable_callback()
+    rs232.enable_read_callback()
 
     rs232.write(*string_to_charlist('test\n'))
 
