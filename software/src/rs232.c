@@ -299,13 +299,13 @@ void tick(const uint8_t tick_type) {
 
 void invocation(const ComType com, const uint8_t *data) {
 	switch(((StandardMessage*)data)->header.fid) {
-		case FID_READ:                read(com, (Read*)data); break;
-		case FID_WRITE:               write(com, (Write*)data); break;
-		case FID_ENABLE_CALLBACK:     enable_callback(com, (EnableCallback*)data); break;
-		case FID_DISABLE_CALLBACK:    disable_callback(com, (DisableCallback*)data); break;
-		case FID_IS_CALLBACK_ENABLED: is_callback_enabled(com, (IsCallbackEnabled*)data); break;
-		case FID_SET_CONFIGURATION:   set_configuration(com, (SetConfiguration*)data); break;
-		case FID_GET_CONFIGURATION:   get_configuration(com, (GetConfiguration*)data); break;
+		case FID_READ:                     read(com, (Read*)data); break;
+		case FID_WRITE:                    write(com, (Write*)data); break;
+		case FID_ENABLE_READ_CALLBACK:     enable_read_callback(com, (EnableReadCallback*)data); break;
+		case FID_DISABLE_READ_CALLBACK:    disable_read_callback(com, (DisableReadCallback*)data); break;
+		case FID_IS_READ_CALLBACK_ENABLED: is_read_callback_enabled(com, (IsReadCallbackEnabled*)data); break;
+		case FID_SET_CONFIGURATION:        set_configuration(com, (SetConfiguration*)data); break;
+		case FID_GET_CONFIGURATION:        get_configuration(com, (GetConfiguration*)data); break;
 		default: BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_NOT_SUPPORTED, com); break;
 	}
 }
@@ -349,24 +349,24 @@ void write(const ComType com, const Write *data) {
 	BA->send_blocking_with_timeout(&wr, sizeof(WriteReturn), com);
 }
 
-void enable_callback(const ComType com, const EnableCallback *data) {
+void enable_read_callback(const ComType com, const EnableReadCallback *data) {
 	BC->callback_enabled = true;
 	BA->com_return_setter(com, data);
 }
 
-void disable_callback(const ComType com, const DisableCallback *data) {
+void disable_read_callback(const ComType com, const DisableReadCallback *data) {
 	BC->callback_enabled = false;
 	BA->com_return_setter(com, data);
 }
 
-void is_callback_enabled(const ComType com, const IsCallbackEnabled *data) {
-	IsCallbackEnabledReturn icer;
+void is_read_callback_enabled(const ComType com, const IsReadCallbackEnabled *data) {
+	IsReadCallbackEnabledReturn ircer;
 
-	icer.header         = data->header;
-	icer.header.length  = sizeof(IsCallbackEnabledReturn);
-	icer.enabled        = BC->callback_enabled;
+	ircer.header         = data->header;
+	ircer.header.length  = sizeof(IsReadCallbackEnabledReturn);
+	ircer.enabled        = BC->callback_enabled;
 
-	BA->send_blocking_with_timeout(&icer, sizeof(IsCallbackEnabledReturn), com);
+	BA->send_blocking_with_timeout(&ircer, sizeof(IsReadCallbackEnabledReturn), com);
 }
 
 void set_configuration(const ComType com, const SetConfiguration *data) {

@@ -28,14 +28,14 @@
 
 #define CONFIGURATION_EEPROM_POSITION (BRICKLET_PLUGIN_MAX_SIZE + 96)
 
-#define FID_WRITE               1
-#define FID_READ                2
-#define FID_ENABLE_CALLBACK     3
-#define FID_DISABLE_CALLBACK    4
-#define FID_IS_CALLBACK_ENABLED 5
-#define FID_SET_CONFIGURATION   6
-#define FID_GET_CONFIGURATION   7
-#define FID_READ_CALLBACK       8
+#define FID_WRITE                    1
+#define FID_READ                     2
+#define FID_ENABLE_READ_CALLBACK     3
+#define FID_DISABLE_READ_CALLBACK    4
+#define FID_IS_READ_CALLBACK_ENABLED 5
+#define FID_SET_CONFIGURATION        6
+#define FID_GET_CONFIGURATION        7
+#define FID_READ_CALLBACK            8
 
 #define MESSAGE_LENGTH 60
 
@@ -66,20 +66,20 @@ typedef struct {
 
 typedef struct {
 	MessageHeader header;
-} __attribute__((__packed__)) EnableCallback;
+} __attribute__((__packed__)) EnableReadCallback;
 
 typedef struct {
 	MessageHeader header;
-} __attribute__((__packed__)) DisableCallback;
+} __attribute__((__packed__)) DisableReadCallback;
 
 typedef struct {
 	MessageHeader header;
-} __attribute__((__packed__)) IsCallbackEnabled;
+} __attribute__((__packed__)) IsReadCallbackEnabled;
 
 typedef struct {
 	MessageHeader header;
 	bool enabled;
-} __attribute__((__packed__)) IsCallbackEnabledReturn;
+} __attribute__((__packed__)) IsReadCallbackEnabledReturn;
 
 typedef struct {
 	MessageHeader header;
@@ -113,9 +113,9 @@ typedef struct {
 
 void read(const ComType com, const Read *data);
 void write(const ComType com, const Write *data);
-void enable_callback(const ComType com, const EnableCallback *data);
-void disable_callback(const ComType com, const DisableCallback *data);
-void is_callback_enabled(const ComType com, const IsCallbackEnabled *data);
+void enable_read_callback(const ComType com, const EnableReadCallback *data);
+void disable_read_callback(const ComType com, const DisableReadCallback *data);
+void is_read_callback_enabled(const ComType com, const IsReadCallbackEnabled *data);
 void set_configuration(const ComType com, const SetConfiguration *data);
 void get_configuration(const ComType com, const GetConfiguration *data);
 
