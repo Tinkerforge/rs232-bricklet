@@ -20,8 +20,25 @@
         <div>
         <script src="./Tinkerforge.js" type='text/javascript'></script>
         <script type='text/javascript'>
-            // In this program we connect RX to TX and to receive
-            // the messages that we are sending
+            // For this example connect the RX1 and TX pin to receive the send message
+
+            // Convert string to array of length 60 as needed by write
+            function stringToCharArray(message) {
+                var array = [];
+                for(var i = 0; i < message.length; i++) {
+                    array.push(message[i]);
+                }
+                for(var i = message.length; i < 60; i++) {
+                    array.push('\0');
+                }
+                return array
+            }
+
+            // Assume that the message consists of ASCII characters and
+            // convert it from an array of chars to a string
+            function charArrayToString(message, len) {
+                return message.slice(0, len).join('');
+            }
 
             var ipcon;
             var textArea = document.getElementById("text");
@@ -46,27 +63,16 @@
                     function(connectReason) {
                         rs232.enableReadCallback();
 
-                        message = 'test\n';
-
-                        // Convert message to array of length 60 as needed by write
-                        var arr = [];
-                        for(var i = 0; i < message.length; i++) {
-                            arr.push(message[i]);
-                        }
-
-                        for(var i = message.length; i < 60; i++) {
-                            arr.push('\0');
-                        }
-
-                        rs232.write(arr, message.length);
+                        var message = 'test';
+                        rs232.write(stringToCharArray(message), message.length);
                     }
                 );
                 // Register callback
                 rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ_CALLBACK,
                     // Callback function for read callback
-                    function(message, length) {
-                        str = message.join('');
-                        textArea.value += 'message (length: ' + length + '): "' + str + '"\n';
+                    function(message, len) {
+                        var str = charArrayToString(message, len);
+                        textArea.value += 'Message (length: ' + len + '): "' + str + '"\n';
                     }
                 );
             }

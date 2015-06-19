@@ -3,8 +3,7 @@ program ExampleCallback;
 {$ifdef MSWINDOWS}{$apptype CONSOLE}{$endif}
 {$ifdef FPC}{$mode OBJFPC}{$H+}{$endif}
 
-{ In this program we connect RX to TX and to receive }
-{ the messages that we are sending }
+{ For this example connect the RX1 and TX pin to receive the send message }
 
 uses
   SysUtils, IPConnection, BrickletRS232;
@@ -15,7 +14,8 @@ type
     ipcon: TIPConnection;
     rs232: TBrickletRS232;
   public
-    procedure ReadCB(sender: TBrickletRS232; const message: TArray0To59OfChar; const len: byte);
+    procedure ReadCB(sender: TBrickletRS232;
+                     const msg: TArray0To59OfChar; const len: byte);
     procedure Execute;
   end;
 
@@ -28,9 +28,10 @@ var
   e: TExample;
 
 { Callback function for read callback }
-procedure TExample.ReadCB(sender: TBrickletRS232; const message: TArray0To59OfChar; const len: byte);
+procedure TExample.ReadCB(sender: TBrickletRS232;
+                          const msg: TArray0To59OfChar; const len: byte);
 begin
-  WriteLn(Format('message (length %d): "%s"', [len, message]));
+  WriteLn(Format('Message (length %d): "%s"', [len, Copy(msg, 0, len)]));
 end;
 
 procedure TExample.Execute;

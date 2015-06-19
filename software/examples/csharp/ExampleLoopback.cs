@@ -1,8 +1,6 @@
 using Tinkerforge;
-using System;
 
-// In this program we connect RX to TX and to receive
-// the messages that we are sending
+// For this example connect the RX1 and TX pin to receive the send message
 
 class Example
 {
@@ -10,21 +8,31 @@ class Example
 	private static int PORT = 4223;
 	private static string UID = "XYZ"; // Change to your UID
 
+	// Convert message to array of length 60 as needed by write
 	static char[] StringToCharArray(string message)
 	{
-		char[] arr = message.ToCharArray();
-		Array.Resize(ref arr, 60);
-		return arr;
+		char[] array = message.ToCharArray();
+
+		Array.Resize(ref array, 60);
+
+		return array;
 	}
 
-	// Callback function for read callback (parameter has unit cm)
+	// Assume that the message consists of ASCII characters and
+	// convert it from an array of chars to a string
+	static string CharArrayToString(char[] message, byte length)
+	{
+		return new string(message, 0, length);
+	}
+
+	// Callback function for read callback
 	static void ReadCB(BrickletRS232 sender, char[] message, byte length)
 	{
-		string str = new string(message);
-		System.Console.WriteLine("message (length: " + length + "): \"" + str + "\"");
+		string str = CharArrayToString(message, length);
+		System.Console.WriteLine("Message (length: " + length + "): \"" + str + "\"");
 	}
 
-	static void Main() 
+	static void Main()
 	{
 		IPConnection ipcon = new IPConnection(); // Create IP connection
 		BrickletRS232 rs232 = new BrickletRS232(UID, ipcon); // Create device object
@@ -36,7 +44,7 @@ class Example
 		rs232.ReadCallback += ReadCB;
 		rs232.EnableReadCallback();
 
-		rs232.Write(StringToCharArray("test\n"), 5);
+		rs232.Write(StringToCharArray("test"), 4);
 
 		System.Console.WriteLine("Press enter to exit");
 		System.Console.ReadLine();

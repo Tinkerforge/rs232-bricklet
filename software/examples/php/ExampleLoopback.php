@@ -1,7 +1,6 @@
 <?php
 
-// In this program we connect RX to TX and to receive
-// the messages that we are sending
+// For this example connect the RX1 and TX pin to receive the send message
 
 require_once('Tinkerforge/IPConnection.php');
 require_once('Tinkerforge/BrickletRS232.php');
@@ -13,10 +12,31 @@ const HOST = 'localhost';
 const PORT = 4223;
 const UID = 'XYZ'; // Change to your UID
 
+// Convert string to char array with length 60, as needed by write
+function stringToCharArray($message)
+{
+    $chars = str_split($message);
+
+    while (sizeof($chars) < 60)
+    {
+        array_push($chars, '\0');
+    }
+
+    return $chars;
+}
+
+// Assume that the message consists of ASCII characters and
+// convert it from an array of chars to a string
+function charArrayToString($message, $length)
+{
+    return implode(array_slice($message, 0, $length));
+}
+
 // Callback function for read callback
 function cb_read($message, $length)
 {
-    echo "message (length: " . $length . "): \"" . implode($message) . "\"\n";
+    $str = charArrayToString($message, $length);
+    echo "Message (length: " . $length . "): \"" . $str . "\"\n";
 }
 
 $ipcon = new IPConnection(); // Create IP connection
@@ -27,10 +47,10 @@ $ipcon->connect(HOST, PORT); // Connect to brickd
 
 // Register read callback to function cb_read
 $rs232->registerCallback(BrickletRS232::CALLBACK_READ_CALLBACK, 'cb_read');
-$rs232->enableReadCallback();
 
-$message = "test\n";
-$rs232->write(str_split($message), strlen($message));
+$message = "test";
+$rs232->enableReadCallback();
+$rs232->write(stringToCharArray($message), strlen($message));
 
 echo "Press ctrl+c to exit\n";
 $ipcon->dispatchCallbacks(-1); // Dispatch callbacks forever

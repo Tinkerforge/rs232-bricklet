@@ -1,0 +1,38 @@
+Needs["NETLink`"]
+LoadNETAssembly["Tinkerforge",NotebookDirectory[]<>"../../.."]
+
+(* For this example connect the RX1 and TX pin to receive the send message *)
+
+host="localhost"
+port=4223
+uid="XYZ"(* Change to your UID *)
+
+(* Create IPConnection and device object *)
+ipcon=NETNew["Tinkerforge.IPConnection"]
+rs232=NETNew["Tinkerforge.BrickletRS232",uid,ipcon]
+ipcon@Connect[host,port]
+
+(* Convert string to char array with length 60,as needed by write *)
+StringToCharList[message_]:=PadRight[ToCharacterCode[message],60, 0]
+
+(* Assume that the message consists of ASCII characters and
+   convert it from an array of chars to a string *)
+CharListToString[message_,length_]:=StringTake[FromCharacterCode[message],length]
+
+(* Callback function for read callback *)
+ReadCB[sender_,message_,length_]:=
+ Print["Message (length: "<>ToString[N[length]]<>"): "<>
+       CharListToString[message,length]]
+AddEventHandler[rs232@ReadCallback,ReadCB]
+rs232@EnableReadCallback[]
+
+message:= "test"
+(* FIXME: This call crashes Mono with a SIGSEGV, no clue why *)
+rs232@Write[StringToCharList[message], StringLength[message]]
+
+Input["Click OK to exit"]
+
+(* Clean up *)
+ipcon@Disconnect[]
+ReleaseNETObject[rs232]
+ReleaseNETObject[ipcon]

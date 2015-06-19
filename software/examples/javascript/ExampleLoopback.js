@@ -1,7 +1,6 @@
 var Tinkerforge = require('tinkerforge');
 
-// In this program we connect RX to TX and to receive
-// the messages that we are sending
+// For this example connect the RX1 and TX pin to receive the send message
 
 var HOST = 'localhost';
 var PORT = 4223;
@@ -9,6 +8,24 @@ var UID = 'XYZ'; // Change to your UID
 
 var ipcon = new Tinkerforge.IPConnection(); // Create IP connection
 var rs232 = new Tinkerforge.BrickletRS232(UID, ipcon); // Create device object
+
+// Convert string to array of length 60 as needed by write
+function stringToCharArray(message) {
+    var array = [];
+    for(var i = 0; i < message.length; i++) {
+        array.push(message[i]);
+    }
+    for(var i = message.length; i < 60; i++) {
+        array.push('\0');
+    }
+    return array
+}
+
+// Assume that the message consists of ASCII characters and
+// convert it from an array of chars to a string
+function charArrayToString(message, length) {
+    return message.slice(0, length).join('');
+}
 
 ipcon.connect(HOST, PORT,
     function(error) {
@@ -21,19 +38,8 @@ ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
     function(connectReason) {
         rs232.enableReadCallback();
 
-        message = 'test\n';
-
-        // Convert message to array of length 60 as needed by write
-        var arr = [];
-        for(var i = 0; i < message.length; i++) {
-            arr.push(message[i]);
-        }
-
-        for(var i = message.length; i < 60; i++) {
-            arr.push('\0');
-        }
-
-        rs232.write(arr, message.length);
+        var message = 'test';
+        rs232.write(stringToCharArray(message), message.length);
     }
 );
 
@@ -41,10 +47,9 @@ ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
 rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ_CALLBACK,
     // Callback function for read callback
     function(message, length) {
-        str = message.join('');
-        console.log('message (length: ' + length + '): "' + str + '"');
+        var str = charArrayToString(message, length);
+        console.log('Message (length: ' + length + '): "' + str + '"');
     }
-
 );
 
 console.log("Press any key to exit ...");

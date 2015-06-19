@@ -1,24 +1,29 @@
 Imports Tinkerforge
-Imports System
 
-' In this program we connect RX to TX and to receive
-' the messages that we are sending
+' For this example connect the RX1 and TX pin to receive the send message
 
 Module ExampleCallback
     Const HOST As String = "localhost"
     Const PORT As Integer = 4223
     Const UID As String = "XYZ" ' Change to your UID
 
-    Function StringToCharArray(ByVal message As string) As Char()
-        Dim arr As Char() = message.ToCharArray()
-        ReDim Preserve arr(60)
+    ' Convert message to array of length 60 as needed by write
+    Function StringToCharArray(ByVal message As String) As Char()
+        Dim chars As Char() = message.ToCharArray()
+        ReDim Preserve chars(60)
+        Return chars
+    End Function
 
-        Return arr
+    ' Assume that the message consists of ASCII characters and
+    ' convert it from an array of chars to a string
+    Function CharArrayToString(ByVal message As Char(), ByVal length As Byte) As String
+        Dim str as String = new String(message, 0, length)
+        Return str
     End Function
 
     ' Callback function for read callback
     Sub ReadCB(ByVal sender As BrickletRS232, ByVal message As Char(), ByVal length As Byte)
-        Dim str as String = new String(message)
+        Dim str as String = CharArrayToString(message, length)
         System.Console.WriteLine("message (length: {0}): '{1}'", length, str)
     End Sub
 

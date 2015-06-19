@@ -1,21 +1,28 @@
 import com.tinkerforge.BrickletRS232;
 import com.tinkerforge.IPConnection;
 
-// In this program we connect RX to TX and to receive
-// the messages that we are sending
+// For this example connect the RX1 and TX pin to receive the send message
 
 public class ExampleLoopback {
 	private static final String HOST = "localhost";
 	private static final int PORT = 4223;
 	private static final String UID = "XYZ"; // Change to your UID
 
+	// Convert string to array of length 60 as needed by write
 	public static char[] stringToCharArray(String message) {
-		char[] arr = new char[60];
+		char[] array = new char[60];
+
 		for(int i = 0; i < message.length() ; i++) {
-			arr[i] = message.charAt(i);
+			array[i] = message.charAt(i);
 		}
 
-		return arr;
+		return array;
+	}
+
+	// Assume that the message consists of ASCII characters and
+	// convert it from an array of chars to a string
+	public static String charArrayToString(char[] message, short length) {
+		return new String(message, 0, length);
 	}
 
 	// Note: To make the example code cleaner we do not handle exceptions. Exceptions you
@@ -30,13 +37,13 @@ public class ExampleLoopback {
 		// Add and implement read listener
 		rs232.addReadCallbackListener(new BrickletRS232.ReadCallbackListener() {
 			public void readCallback(char[] message, short length) {
-				String str = new String(message);
-				System.out.println("message (length: " + length + "): \"" + str + "\"");
+				String str = charArrayToString(message, length);
+				System.out.println("Message (length: " + length + "): \"" + str + "\"");
 			}
 		});
 
 		rs232.enableReadCallback();
-		rs232.write(stringToCharArray("test\n"), (short)5);
+		rs232.write(stringToCharArray("test"), (short)4);
 
 		System.out.println("Press key to exit"); System.in.read();
 		ipcon.disconnect();

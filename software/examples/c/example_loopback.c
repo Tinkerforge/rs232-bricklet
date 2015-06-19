@@ -7,14 +7,20 @@
 #define PORT 4223
 #define UID "XYZ" // Change to your UID
 
-// In this program we connect RX to TX and to receive
-// the messages that we are sending
+// For this example connect the RX1 and TX pin to receive the send message
 
 // Callback function for read callback
-void cb_read(char *message, uint8_t length, void *user_data) {
+void cb_read(char message[60], uint8_t length, void *user_data) {
+	char buffer[61]; // +1 for the NUL-terminator
+
 	(void)user_data; // avoid unused parameter warning
 
-	printf("message (length: %d): \"%s\"\n", length, message);
+	// Assume that the message consists of ASCII characters and
+	// convert it from an array of chars to a NUL-terminated string
+	memcpy(buffer, message, length);
+	buffer[length] = '\0';
+
+	printf("Message (length: %d): \"%s\"\n", length, buffer);
 }
 
 int main() {
@@ -24,7 +30,7 @@ int main() {
 
 	// Create device object
 	RS232 rs232;
-	rs232_create(&rs232, UID, &ipcon); 
+	rs232_create(&rs232, UID, &ipcon);
 
 	// Connect to brickd
 	if(ipcon_connect(&ipcon, HOST, PORT) < 0) {
@@ -39,7 +45,10 @@ int main() {
 	                        (void *)cb_read,
 	                        NULL);
 	rs232_enable_read_callback(&rs232);
-	rs232_write(&rs232, "test\n", 5);
+
+	char buffer[60] = "test";
+	uint8_t written;
+	rs232_write(&rs232, buffer, 4, &written);
 
 	printf("Press key to exit\n");
 	getchar();
