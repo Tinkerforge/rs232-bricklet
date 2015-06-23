@@ -32,7 +32,7 @@ sub char_array_to_string
 {
     my ($message, $length) = @_;
 
-    return substr(join("", $message), 0, $length);
+    return substr(join("", @{$message}), 0, $length);
 }
 
 # Callback function for read callback
