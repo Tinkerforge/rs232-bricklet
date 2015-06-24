@@ -13,7 +13,7 @@ class Example
 	{
 		char[] array = message.ToCharArray();
 
-		Array.Resize(ref array, 60);
+		System.Array.Resize(ref array, 60);
 
 		return array;
 	}
