@@ -1,5 +1,6 @@
 import com.tinkerforge.BrickletRS232;
 import com.tinkerforge.IPConnection;
+import java.util.Arrays;
 
 // For this example connect the RX1 and TX pin to receive the send message
 
@@ -10,13 +11,7 @@ public class ExampleLoopback {
 
 	// Convert string to array of length 60 as needed by write
 	public static char[] stringToCharArray(String message) {
-		char[] array = new char[60];
-
-		for(int i = 0; i < message.length() ; i++) {
-			array[i] = message.charAt(i);
-		}
-
-		return array;
+		return Arrays.copyOf(message.toCharArray(), 60);
 	}
 
 	// Assume that the message consists of ASCII characters and
