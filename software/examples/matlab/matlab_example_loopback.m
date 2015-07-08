@@ -30,6 +30,7 @@ function cb_read(e)
     fprintf('Message (length: %g): %s\n', e.length, e.message);
 end
 
+% Convert string to array of length 60 as needed by write
 function char_array = string_to_char_array(message)
     import java.util.Arrays;
     char_array = Arrays.copyOf(message.toCharArray(), 60);
