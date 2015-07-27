@@ -1,6 +1,6 @@
-import com.tinkerforge.BrickletRS232;
-import com.tinkerforge.IPConnection;
 import java.util.Arrays;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.BrickletRS232;
 
 // For this example connect the RX1 and TX pin to receive the send message
 
