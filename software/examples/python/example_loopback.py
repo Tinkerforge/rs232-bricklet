@@ -6,7 +6,7 @@ PORT = 4223
 UID = "XYZ" # Change to your UID
 
 from tinkerforge.ip_connection import IPConnection
-from tinkerforge.bricklet_rs232 import RS232
+from tinkerforge.bricklet_rs232 import BrickletRS232
 
 # For this example connect the RX1 and TX pin to receive the send message
 
@@ -28,7 +28,7 @@ def cb_read(message, length):
 
 if __name__ == "__main__":
     ipcon = IPConnection() # Create IP connection
-    rs232 = RS232(UID, ipcon) # Create device object
+    rs232 = BrickletRS232(UID, ipcon) # Create device object
 
     ipcon.connect(HOST, PORT) # Connect to brickd
     # Don't use device before ipcon is connected
