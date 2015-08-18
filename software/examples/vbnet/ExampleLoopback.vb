@@ -2,7 +2,7 @@ Imports Tinkerforge
 
 ' For this example connect the RX1 and TX pin to receive the send message
 
-Module ExampleCallback
+Module ExampleLoopback
     Const HOST As String = "localhost"
     Const PORT As Integer = 4223
     Const UID As String = "XYZ" ' Change to your UID
