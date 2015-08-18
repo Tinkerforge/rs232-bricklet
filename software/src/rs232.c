@@ -86,6 +86,26 @@ uint8_t sc16is740_get_address(void) {
 	}
 }
 
+uint8_t sc16is740_read_fifo(uint8_t *data) {
+	int8_t length = BUFFER_SIZE-1 - size_out();
+	uint8_t rxlvl = sc16is740_read_register(I2C_INTERNAL_ADDRESS_RXLVL);
+	length = MIN(length, rxlvl);
+
+	if(length < 0) {
+		return 0;
+	}
+
+	BA->TWID_Read(BA->twid,
+	              sc16is740_get_address(),
+	              I2C_INTERNAL_ADDRESS_RHR << 3,
+	              1,
+	              data,
+	              length,
+	              NULL);
+
+	return length;
+}
+
 uint8_t sc16is740_read_register(const uint8_t address) {
 	uint8_t value = 0;
 
@@ -157,11 +177,10 @@ void sc16is740_reconfigure(void) {
 void sc16is740_init(void) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		BA->bricklet_select(BS->port - 'a');
-		// Configure FIFOs
-		uint8_t fcr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_FCR);
+		sc16is740_write_register(I2C_INTERNAL_ADDRESS_FCR, (1 << 0));
 
-		fcr |= (1 << 0); // Enable FIFOs: FCR[0] = 1
-		sc16is740_write_register(I2C_INTERNAL_ADDRESS_FCR, fcr);
+		// Enable Receive Holding Register Interrupt: IER[0] = 1
+		sc16is740_write_register(I2C_INTERNAL_ADDRESS_IER, 1 << 0);
 
 		BA->bricklet_deselect(BS->port - 'a');
 		BA->mutex_give(*BA->mutex_twi_bricklet);
@@ -173,8 +192,12 @@ void constructor(void) {
 	               "BrickContext too big");
 
 	PIN_NIRQ.type = PIO_INPUT;
-	PIN_NIRQ.attribute = PIO_DEFAULT;
+	PIN_NIRQ.attribute = PIO_PULLUP;
 	BA->PIO_Configure(&PIN_NIRQ, 1);
+
+	PIN_NRESET.type = PIO_OUTPUT_1;
+	PIN_NRESET.attribute = PIO_DEFAULT;
+	BA->PIO_Configure(&PIN_NRESET, 1);
 
 	BC->callback_enabled = false;
 	BC->in_sync = true;
@@ -185,7 +208,7 @@ void constructor(void) {
 	BC->wordlength = 8;
 	BC->hardware_flowcontrol = 0;
 	BC->software_flowcontrol = 0;
-	BC->current_rxtx = false;
+	BC->error = 0;
 
 	read_configuration_from_eeprom();
 	sc16is740_reset();
@@ -242,22 +265,45 @@ bool get_char_in(char *c) {
 	return false;
 }
 
+bool try_read_data(void) {
+	while((!(PIN_NIRQ.pio->PIO_PDSR & PIN_NIRQ.mask)) && (size_out() < (BUFFER_SIZE-1) )) {
+		uint8_t buffer[59];
+		uint8_t length = sc16is740_read_fifo(buffer);
+		if(length == 0) {
+			return false;
+		}
+
+		for(uint8_t i = 0; i < length; i++) {
+			new_char_out(buffer[i]);
+		}
+		return true;
+	}
+
+	return false;
+}
+
 void tick(const uint8_t tick_type) {
 	if(tick_type & TICK_TASK_TYPE_CALCULATION) {
 		if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 			BA->bricklet_select(BS->port - 'a');
-
-			if(BC->current_rxtx) {
-				uint8_t rxlvl = sc16is740_read_register(I2C_INTERNAL_ADDRESS_RXLVL);
-				while((rxlvl > 0) && (size_out() < (BUFFER_SIZE-1) )) {
-					new_char_out(sc16is740_read_register(I2C_INTERNAL_ADDRESS_RHR));
-					rxlvl--;
+			if(try_read_data()) {
+				// If we have read something, lets look if there was an error.
+				const uint8_t lsr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LSR);
+				if(lsr & (1 << 1)) {
+					BC->error |= (1 << 0);
 				}
-				BC->current_rxtx = false;
-			} else {
-				// Use txlvl - 1 here, there may be a byte free in the FIFO, but the
-				// THR is already full. In this case we would get an overflow if we
-				// would write again!
+				if(lsr & (1 << 2)) {
+					BC->error |= (1 << 1);
+				}
+				if(lsr & (1 << 3)) {
+					BC->error |= (1 << 2);
+				}
+			}
+
+			// Use txlvl - 1 here, there may be a byte free in the FIFO, but the
+			// THR is already full. In this case we would get an overflow if we
+			// would write again!
+			if(size_in() > 0) {
 				int8_t txlvl = sc16is740_read_register(I2C_INTERNAL_ADDRESS_TXLVL) - 1;
 				while((txlvl > 0) && (size_in() > 0)) {
 					char c;
@@ -266,7 +312,6 @@ void tick(const uint8_t tick_type) {
 					}
 					txlvl--;
 				}
-				BC->current_rxtx = true;
 			}
 
 			BA->bricklet_deselect(BS->port - 'a');
@@ -293,6 +338,18 @@ void tick(const uint8_t tick_type) {
 			BA->send_blocking_with_timeout(&rc,
 										   sizeof(ReadCallback),
 										   *BA->com_current);
+		}
+
+		if(BC->error != 0) {
+			ErrorCallback ec;
+			BA->com_make_default_header(&ec, BS->uid, sizeof(ErrorCallback), FID_ERROR_CALLBACK);
+			ec.error = BC->error;
+
+			BA->send_blocking_with_timeout(&ec,
+										   sizeof(ErrorCallback),
+										   *BA->com_current);
+
+			BC->error = 0;
 		}
 	}
 }

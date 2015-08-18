@@ -36,6 +36,7 @@
 #define FID_SET_CONFIGURATION        6
 #define FID_GET_CONFIGURATION        7
 #define FID_READ_CALLBACK            8
+#define FID_ERROR_CALLBACK           9
 
 #define MESSAGE_LENGTH 60
 
@@ -111,6 +112,11 @@ typedef struct {
 	uint8_t length;
 } __attribute__((__packed__)) ReadCallback;
 
+typedef struct {
+	MessageHeader header;
+	uint8_t error;
+} __attribute__((__packed__)) ErrorCallback;
+
 void read(const ComType com, const Read *data);
 void write(const ComType com, const Write *data);
 void enable_read_callback(const ComType com, const EnableReadCallback *data);
@@ -151,6 +157,9 @@ void sc16is740_write_register(const uint8_t address, uint8_t value);
 void sc16is740_reset(void);
 void write_configuration_to_eeprom(void);
 void read_configuration_from_eeprom(void);
+
+uint8_t size_in(void);
+uint8_t size_out(void);
 
 void invocation(const ComType com, const uint8_t *data);
 void constructor(void);
