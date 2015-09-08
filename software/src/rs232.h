@@ -37,6 +37,7 @@
 #define FID_GET_CONFIGURATION        7
 #define FID_READ_CALLBACK            8
 #define FID_ERROR_CALLBACK           9
+#define FID_SET_BREAK_CONDITION      10
 
 #define MESSAGE_LENGTH 60
 
@@ -117,6 +118,11 @@ typedef struct {
 	uint8_t error;
 } __attribute__((__packed__)) ErrorCallback;
 
+typedef struct {
+	MessageHeader header;
+	uint16_t break_time;
+} __attribute__((__packed__)) SetBreakCondition;
+
 void read(const ComType com, const Read *data);
 void write(const ComType com, const Write *data);
 void enable_read_callback(const ComType com, const EnableReadCallback *data);
@@ -124,6 +130,7 @@ void disable_read_callback(const ComType com, const DisableReadCallback *data);
 void is_read_callback_enabled(const ComType com, const IsReadCallbackEnabled *data);
 void set_configuration(const ComType com, const SetConfiguration *data);
 void get_configuration(const ComType com, const GetConfiguration *data);
+void set_break_condition(const ComType com, const SetBreakCondition *data);
 
 
 #define I2C_EEPROM_ADDRESS_HIGH 84

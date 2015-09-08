@@ -4,3 +4,6 @@
 2.0.1:
 - Make reading of RHR register more efficient
 - Add callbacks for overrun, framing and parity errors
+
+2.0.2:
+- Add support for break condition

@@ -34,7 +34,7 @@
 
 #define BRICKLET_FIRMWARE_VERSION_MAJOR 2
 #define BRICKLET_FIRMWARE_VERSION_MINOR 0
-#define BRICKLET_FIRMWARE_VERSION_REVISION 1
+#define BRICKLET_FIRMWARE_VERSION_REVISION 2
 
 #define BRICKLET_HARDWARE_VERSION_MAJOR 1
 #define BRICKLET_HARDWARE_VERSION_MINOR 0
@@ -72,6 +72,7 @@ typedef struct {
 	uint8_t software_flowcontrol;
 
 	uint8_t error;
+	uint16_t break_time;
 } BrickContext;
 
 #endif

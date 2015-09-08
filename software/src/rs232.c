@@ -284,6 +284,21 @@ bool try_read_data(void) {
 
 void tick(const uint8_t tick_type) {
 	if(tick_type & TICK_TASK_TYPE_CALCULATION) {
+		if(BC->break_time > 0) {
+			BC->break_time--;
+			if(BC->break_time == 0) {
+				if(BA->mutex_take(*BA->mutex_twi_bricklet, 0)) {
+					BA->bricklet_select(BS->port - 'a');
+					uint8_t lcr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LCR);
+					lcr &= ~(1 << 6); // Disable break control bit: LCR[6] = 0
+					sc16is740_write_register(I2C_INTERNAL_ADDRESS_LCR, lcr);
+					BA->bricklet_deselect(BS->port - 'a');
+					BA->mutex_give(*BA->mutex_twi_bricklet);
+				}
+			}
+		}
+
+
 		if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 			BA->bricklet_select(BS->port - 'a');
 			if(try_read_data()) {
@@ -363,6 +378,7 @@ void invocation(const ComType com, const uint8_t *data) {
 		case FID_IS_READ_CALLBACK_ENABLED: is_read_callback_enabled(com, (IsReadCallbackEnabled*)data); break;
 		case FID_SET_CONFIGURATION:        set_configuration(com, (SetConfiguration*)data); break;
 		case FID_GET_CONFIGURATION:        get_configuration(com, (GetConfiguration*)data); break;
+		case FID_SET_BREAK_CONDITION:      set_break_condition(com, (SetBreakCondition*)data); break;
 		default: BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_NOT_SUPPORTED, com); break;
 	}
 }
@@ -462,6 +478,24 @@ void get_configuration(const ComType com, const GetConfiguration *data) {
 	gcr.software_flowcontrol = BC->software_flowcontrol;
 
 	BA->send_blocking_with_timeout(&gcr, sizeof(GetConfigurationReturn), com);
+}
+
+void set_break_condition(const ComType com, const SetBreakCondition *data) {
+	if(data->break_time == 0) {
+		return;
+	}
+	BC->break_time = data->break_time;
+
+	if(BA->mutex_take(*BA->mutex_twi_bricklet, 0)) {
+		BA->bricklet_select(BS->port - 'a');
+		uint8_t lcr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LCR);
+		lcr |= (1 << 6); // Enable break control bit: LCR[6] = 1
+		sc16is740_write_register(I2C_INTERNAL_ADDRESS_LCR, lcr);
+		BA->bricklet_deselect(BS->port - 'a');
+		BA->mutex_give(*BA->mutex_twi_bricklet);
+	}
+
+	BA->com_return_setter(com, data);
 }
 
 void write_configuration_to_eeprom(void) {
