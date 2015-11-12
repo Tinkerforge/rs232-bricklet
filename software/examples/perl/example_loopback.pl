@@ -9,9 +9,6 @@ use constant HOST => 'localhost';
 use constant PORT => 4223;
 use constant UID => 'XYZ'; # Change to your UID
 
-my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection
-my $rs232 = Tinkerforge::BrickletRS232->new(&UID, $ipcon); # Create device object
-
 # Convert string to char array with length 60, as needed by write
 sub string_to_char_array
 {
@@ -35,7 +32,7 @@ sub char_array_to_string
     return substr(join("", @{$message}), 0, $length);
 }
 
-# Callback function for read callback
+# Callback subroutine for read callback
 sub cb_read
 {
     my ($message, $length) = @_;
@@ -44,16 +41,22 @@ sub cb_read
     print "Message (length: " . $length . "): \"" . $str . "\"\n";
 }
 
+my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection
+my $rs232 = Tinkerforge::BrickletRS232->new(&UID, $ipcon); # Create device object
+
 $ipcon->connect(&HOST, &PORT); # Connect to brickd
 # Don't use device before ipcon is connected
 
-# Register read callback to function cb_read
+# Register read callback to subroutine cb_read
 $rs232->register_callback($rs232->CALLBACK_READ_CALLBACK, 'cb_read');
+
+# Enable read callback
 $rs232->enable_read_callback();
 
+# Write "test" string
 my @message = string_to_char_array("test");
 $rs232->write(@message, 4);
 
-print "Press any key to exit...\n";
+print "Press key to exit\n";
 <STDIN>;
 $ipcon->disconnect();

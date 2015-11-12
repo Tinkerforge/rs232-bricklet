@@ -48,8 +48,11 @@ begin
 
   { Register read callback to procedure ReadCB }
   rs232.OnReadCallback := {$ifdef FPC}@{$endif}ReadCB;
-  rs232.EnableReadCallback();
 
+  { Enable read callback }
+  rs232.EnableReadCallback;
+
+  { Write "test" string }
   rs232.Write('test', 4);
 
   WriteLn('Press key to exit');

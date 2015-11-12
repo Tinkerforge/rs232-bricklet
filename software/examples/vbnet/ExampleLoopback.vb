@@ -1,3 +1,4 @@
+Imports System
 Imports Tinkerforge
 
 ' For this example connect the RX1 and TX pin to receive the send message
@@ -21,10 +22,10 @@ Module ExampleLoopback
         Return str
     End Function
 
-    ' Callback function for read callback
+    ' Callback subroutine for read callback
     Sub ReadCB(ByVal sender As BrickletRS232, ByVal message As Char(), ByVal length As Byte)
         Dim str as String = CharArrayToString(message, length)
-        System.Console.WriteLine("message (length: {0}): '{1}'", length, str)
+        Console.WriteLine("message (length: {0}): '{1}'", length, str)
     End Sub
 
     Sub Main()
@@ -34,14 +35,17 @@ Module ExampleLoopback
         ipcon.Connect(HOST, PORT) ' Connect to brickd
         ' Don't use device before ipcon is connected
 
-        ' Register read callback to function ReadCB
+        ' Register read callback to subroutine ReadCB
         AddHandler rs232.ReadCallback, AddressOf ReadCB
+
+        ' Enable read callback
         rs232.EnableReadCallback()
 
+        ' Write "test" string
         rs232.Write(StringToCharArray("test"), 4)
 
-        System.Console.WriteLine("Press key to exit")
-        System.Console.ReadLine()
+        Console.WriteLine("Press key to exit")
+        Console.ReadLine()
         ipcon.Disconnect()
     End Sub
 End Module

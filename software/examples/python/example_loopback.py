@@ -33,10 +33,14 @@ if __name__ == "__main__":
     ipcon.connect(HOST, PORT) # Connect to brickd
     # Don't use device before ipcon is connected
 
+    # Register read callback to function cb_read
     rs232.register_callback(rs232.CALLBACK_READ_CALLBACK, cb_read)
+
+    # Enable read callback
     rs232.enable_read_callback()
 
+    # Write "test" string
     rs232.write(*string_to_char_list('test'))
 
-    raw_input('Press key to exit\n') # Use input() in Python 3
+    raw_input("Press key to exit\n") # Use input() in Python 3
     ipcon.disconnect()

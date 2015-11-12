@@ -13,11 +13,14 @@ function octave_example_loopback()
 
     % Register read callback to function cb_read
     rs232.addReadCallbackCallback(@cb_read);
+
+    % Enable read callback
     rs232.enableReadCallback();
 
+    % Write "test" string
     rs232.write(string2chars("test"), 4);
 
-    input("Press any key to exit...\n", "s");
+    input("Press key to exit\n", "s");
     ipcon.disconnect();
 end
 
@@ -47,15 +50,15 @@ end
 % Callback function for illuminance callback (parameter has unit Lux/10)
 function cb_read(e)
     message = java_invoke("java.util.Arrays", "copyOf", e.message, e.length);
-    len = byte2int(e.length)
+    len = java2int(e.length)
 
     fprintf("Message (length: %d): \"%s\"\n", len, chars2string(e.message, len));
 end
 
-function int = byte2int(byte)
+function int = java2int(value)
     if compare_versions(version(), "3.8", "<=")
-        int = byte.intValue();
+        int = value.intValue();
     else
-        int = byte;
+        int = value;
     end
 end

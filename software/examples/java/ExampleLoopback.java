@@ -20,8 +20,8 @@ public class ExampleLoopback {
 		return new String(message, 0, length);
 	}
 
-	// Note: To make the example code cleaner we do not handle exceptions. Exceptions you
-	//       might normally want to catch are described in the documentation
+	// Note: To make the example code cleaner we do not handle exceptions. Exceptions
+	//       you might normally want to catch are described in the documentation
 	public static void main(String args[]) throws Exception {
 		IPConnection ipcon = new IPConnection(); // Create IP connection
 		BrickletRS232 rs232 = new BrickletRS232(UID, ipcon); // Create device object
@@ -29,7 +29,7 @@ public class ExampleLoopback {
 		ipcon.connect(HOST, PORT); // Connect to brickd
 		// Don't use device before ipcon is connected
 
-		// Add and implement read listener
+		// Add read listener
 		rs232.addReadCallbackListener(new BrickletRS232.ReadCallbackListener() {
 			public void readCallback(char[] message, short length) {
 				String str = charArrayToString(message, length);
@@ -37,7 +37,10 @@ public class ExampleLoopback {
 			}
 		});
 
+		// Enable read callback
 		rs232.enableReadCallback();
+
+		// Write "test" string
 		rs232.write(stringToCharArray("test"), (short)4);
 
 		System.out.println("Press key to exit"); System.in.read();

@@ -48,8 +48,11 @@ $ipcon->connect(HOST, PORT); // Connect to brickd
 // Register read callback to function cb_read
 $rs232->registerCallback(BrickletRS232::CALLBACK_READ_CALLBACK, 'cb_read');
 
-$message = "test";
+// Enable read callback
 $rs232->enableReadCallback();
+
+// Write "test" string
+$message = "test";
 $rs232->write(stringToCharArray($message), strlen($message));
 
 echo "Press ctrl+c to exit\n";

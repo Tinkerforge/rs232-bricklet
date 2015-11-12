@@ -28,33 +28,35 @@ function charArrayToString(message, length) {
 }
 
 ipcon.connect(HOST, PORT,
-    function(error) {
-        console.log('Error: '+error);
+    function (error) {
+        console.log('Error: ' + error);
     }
 ); // Connect to brickd
 // Don't use device before ipcon is connected
 
 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
-    function(connectReason) {
+    function (connectReason) {
+        // Enable read callback
         rs232.enableReadCallback();
 
+        // Write "test" string
         var message = 'test';
         rs232.write(stringToCharArray(message), message.length);
     }
 );
 
-// Register callback
+// Register read callback
 rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ_CALLBACK,
     // Callback function for read callback
-    function(message, length) {
+    function (message, length) {
         var str = charArrayToString(message, length);
         console.log('Message (length: ' + length + '): "' + str + '"');
     }
 );
 
-console.log("Press any key to exit ...");
+console.log('Press key to exit');
 process.stdin.on('data',
-    function(data) {
+    function (data) {
         ipcon.disconnect();
         process.exit(0);
     }

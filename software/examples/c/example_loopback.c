@@ -44,8 +44,11 @@ int main(void) {
 	                        RS232_CALLBACK_READ_CALLBACK,
 	                        (void *)cb_read,
 	                        NULL);
+
+	// Enable read callback
 	rs232_enable_read_callback(&rs232);
 
+	// Write "test" string
 	char buffer[60] = "test";
 	uint8_t written;
 	rs232_write(&rs232, buffer, 4, &written);

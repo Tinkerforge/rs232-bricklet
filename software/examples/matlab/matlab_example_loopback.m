@@ -18,10 +18,13 @@ function matlab_example_loopback()
     % Register read callback to function cb_read
     set(rs232, 'ReadCallbackCallback', @(h, e) cb_read(e));
 
+    % Enable read callback
     rs232.enableReadCallback();
+
+    % Write "test" string
     rs232.write(string_to_char_array(String('test')), 4);
 
-    input('Press any key to exit...\n', 's');
+    input('Press key to exit\n', 's');
     ipcon.disconnect();
 end
 

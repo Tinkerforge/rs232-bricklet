@@ -3,10 +3,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[         0,          0]
-NotebookDataLength[      8894,        192]
-NotebookOptionsPosition[      8461,        171]
-NotebookOutlinePosition[      8799,        186]
-CellTagsIndexPosition[      8756,        183]
+NotebookDataLength[      8874,        197]
+NotebookOptionsPosition[      8441,        176]
+NotebookOutlinePosition[      8779,        191]
+CellTagsIndexPosition[      8736,        188]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -28,64 +28,66 @@ Cell[BoxData[{
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"(*", " ", 
+  RowBox[{"(*", 
    RowBox[{
    "For", " ", "this", " ", "example", " ", "connect", " ", "the", " ", "RX1",
      " ", "and", " ", "TX", " ", "pin", " ", "to", " ", "receive", " ", "the",
-     " ", "send", " ", "message"}], " ", "*)"}], "\[IndentingNewLine]", 
+     " ", "send", " ", "message"}], "*)"}], "\[IndentingNewLine]", 
   "\[IndentingNewLine]", 
   RowBox[{
-   RowBox[{"host", "=", "\"\<localhost\>\""}], "\[IndentingNewLine]", 
-   RowBox[{"port", "=", "4223"}], "\[IndentingNewLine]", 
+   RowBox[{"host", "=", "\"\<localhost\>\""}], "\n", 
+   RowBox[{"port", "=", "4223"}], "\n", 
    RowBox[{"uid", "=", "\"\<XYZ\>\""}], 
-   RowBox[{"(*", " ", 
-    RowBox[{"Change", " ", "to", " ", "your", " ", "UID"}], " ", "*)"}], 
-   "\[IndentingNewLine]", "\[IndentingNewLine]", 
-   RowBox[{"(*", " ", 
+   RowBox[{"(*", 
+    RowBox[{"Change", " ", "to", " ", "your", " ", "UID"}], "*)"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
     RowBox[{
     "Create", " ", "IPConnection", " ", "and", " ", "device", " ", "object"}],
-     " ", "*)"}], "\[IndentingNewLine]", 
+     "*)"}], "\[IndentingNewLine]", 
    RowBox[{"ipcon", "=", 
     RowBox[{"NETNew", "[", "\"\<Tinkerforge.IPConnection\>\"", "]"}]}], "\n", 
    
    RowBox[{"rs232", "=", 
     RowBox[{"NETNew", "[", 
      RowBox[{"\"\<Tinkerforge.BrickletRS232\>\"", ",", "uid", ",", "ipcon"}], 
-     "]"}]}], "\[IndentingNewLine]", 
+     "]"}]}], "\n", 
    RowBox[{"ipcon", "@", 
     RowBox[{"Connect", "[", 
      RowBox[{"host", ",", "port"}], "]"}]}], "\[IndentingNewLine]", "\n", 
-   RowBox[{"(*", " ", 
+   RowBox[{"(*", 
     RowBox[{
      RowBox[{
      "Convert", " ", "string", " ", "to", " ", "char", " ", "array", " ", 
       "with", " ", "length", " ", "60"}], ",", 
-     RowBox[{"as", " ", "needed", " ", "by", " ", "write"}]}], " ", "*)"}], 
-   "\n", 
+     RowBox[{"as", " ", "needed", " ", "by", " ", "write"}]}], "*)"}], 
+   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"StringToCharList", "[", "message_", "]"}], ":=", 
     RowBox[{"PadRight", "[", 
      RowBox[{
-      RowBox[{"ToCharacterCode", "[", "message", "]"}], ",", "60", ",", " ", 
-      "0"}], "]"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
-   RowBox[{"(*", " ", 
+      RowBox[{"ToCharacterCode", "[", "message", "]"}], ",", "60", ",", "0"}],
+      "]"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
     RowBox[{
     "Assume", " ", "that", " ", "the", " ", "message", " ", "consists", " ", 
-     "of", " ", "ASCII", " ", "characters", " ", "and", "\n", "   ", 
-     "convert", " ", "it", " ", "from", " ", "an", " ", "array", " ", "of", 
-     " ", "chars", " ", "to", " ", "a", " ", "string"}], " ", "*)"}], 
+     "of", " ", "ASCII", " ", "characters", " ", "and"}], "*)"}], 
    "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "convert", " ", "it", " ", "from", " ", "an", " ", "array", " ", "of", 
+     " ", "chars", " ", "to", " ", "a", " ", "string"}], "*)"}], "\n", 
    RowBox[{
     RowBox[{"CharListToString", "[", 
      RowBox[{"message_", ",", "length_"}], "]"}], ":=", 
     RowBox[{"StringTake", "[", 
      RowBox[{
       RowBox[{"FromCharacterCode", "[", "message", "]"}], ",", "length"}], 
-     "]"}]}], "\n", "\[IndentingNewLine]", 
-   RowBox[{"(*", " ", 
+     "]"}]}], "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
     RowBox[{
     "Callback", " ", "function", " ", "for", " ", "read", " ", "callback"}], 
-    " ", "*)"}], "\[IndentingNewLine]", 
+    "*)"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"ReadCB", "[", 
      RowBox[{"sender_", ",", "message_", ",", "length_"}], "]"}], ":=", 
@@ -94,39 +96,41 @@ Cell[BoxData[
      RowBox[{"\"\<Message (length: \>\"", "<>", 
       RowBox[{"ToString", "[", 
        RowBox[{"N", "[", "length", "]"}], "]"}], "<>", "\"\<): \>\"", "<>", 
-      "\[IndentingNewLine]", "       ", 
       RowBox[{"CharListToString", "[", 
-       RowBox[{"message", ",", "length"}], "]"}]}], "]"}]}], 
-   "\[IndentingNewLine]", 
+       RowBox[{"message", ",", "length"}], "]"}]}], "]"}]}], "\n", 
    RowBox[{"AddEventHandler", "[", 
     RowBox[{
-     RowBox[{"rs232", "@", "ReadCallback"}], ",", "ReadCB"}], "]"}], 
+     RowBox[{"rs232", "@", "ReadCallback"}], ",", "ReadCB"}], "]"}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"Enable", " ", "read", " ", "callback"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"rs232", "@", 
-    RowBox[{"EnableReadCallback", "[", "]"}]}], "\[IndentingNewLine]", 
+    RowBox[{"EnableReadCallback", "[", "]"}]}], "\n", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"Write", " ", "\"\<test\>\"", " ", "string"}], "*)"}], 
    "\[IndentingNewLine]", 
-   RowBox[{"message", ":=", " ", "\"\<test\>\""}], "\[IndentingNewLine]", 
-   RowBox[{"(*", " ", 
+   RowBox[{"message", ":=", "\"\<test\>\""}], "\n", 
+   RowBox[{"(*", 
     RowBox[{
-     RowBox[{"FIXME", ":", " ", 
+     RowBox[{"FIXME", ":", 
       RowBox[{
       "This", " ", "call", " ", "crashes", " ", "Mono", " ", "with", " ", "a",
-        " ", "SIGSEGV"}]}], ",", " ", 
-     RowBox[{"no", " ", "clue", " ", "why"}]}], " ", "*)"}], 
-   "\[IndentingNewLine]", 
+        " ", "SIGSEGV"}]}], ",", 
+     RowBox[{"no", " ", "clue", " ", "why"}]}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{"rs232", "@", 
     RowBox[{"Write", "[", 
      RowBox[{
-      RowBox[{"StringToCharList", "[", "message", "]"}], ",", " ", 
-      RowBox[{"StringLength", "[", "message", "]"}]}], "]"}]}], 
-   "\[IndentingNewLine]", "\[IndentingNewLine]", 
-   RowBox[{"Input", "[", "\"\<Click OK to exit\>\"", "]"}], 
-   "\[IndentingNewLine]", "\[IndentingNewLine]", 
-   RowBox[{"(*", " ", 
-    RowBox[{"Clean", " ", "up"}], " ", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"StringToCharList", "[", "message", "]"}], ",", 
+      RowBox[{"StringLength", "[", "message", "]"}]}], "]"}]}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Input", "[", "\"\<Click OK to exit\>\"", "]"}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"Clean", " ", "up"}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{"ipcon", "@", 
-    RowBox[{"Disconnect", "[", "]"}]}], "\[IndentingNewLine]", 
-   RowBox[{"ReleaseNETObject", "[", "rs232", "]"}], "\[IndentingNewLine]", 
+    RowBox[{"Disconnect", "[", "]"}]}], "\n", 
+   RowBox[{"ReleaseNETObject", "[", "rs232", "]"}], "\n", 
    RowBox[{"ReleaseNETObject", "[", "ipcon", "]"}]}]}]], "Input",
  CellChangeTimes->{{3.600075175574196*^9, 3.600075177574486*^9}, {
    3.600075518821967*^9, 3.60007554243471*^9}, {3.600075580562348*^9, 
@@ -167,10 +171,11 @@ Cell[BoxData[
    3.6437128915611973`*^9}, {3.643712928777615*^9, 3.643712929728944*^9}, {
    3.643714442365982*^9, 3.643714444487204*^9}, {3.643714487894384*^9, 
    3.643714543414875*^9}, {3.643714615364472*^9, 3.643714615569339*^9}, {
-   3.643717109239092*^9, 3.643717113762582*^9}}]
+   3.643717109239092*^9, 3.643717113762582*^9}, {3.656331636317403*^9, 
+   3.65633164565438*^9}}]
 },
 WindowSize->{1521, 867},
-WindowMargins->{{Automatic, 97}, {Automatic, 56}},
+WindowMargins->{{Automatic, 96}, {Automatic, 28}},
 FrontEndVersion->"9.0 for Linux x86 (64-bit) (November 20, 2012)",
 StyleDefinitions->"Default.nb"
 ]
@@ -186,7 +191,7 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[400, 13, 776, 13, 55, "Input"],
-Cell[1179, 28, 7278, 141, 781, "Input"]
+Cell[1179, 28, 7258, 146, 825, "Input"]
 }
 ]
 *)

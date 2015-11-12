@@ -1,3 +1,4 @@
+using System;
 using Tinkerforge;
 
 // For this example connect the RX1 and TX pin to receive the send message
@@ -13,7 +14,7 @@ class Example
 	{
 		char[] array = message.ToCharArray();
 
-		System.Array.Resize(ref array, 60);
+		Array.Resize(ref array, 60);
 
 		return array;
 	}
@@ -29,7 +30,7 @@ class Example
 	static void ReadCB(BrickletRS232 sender, char[] message, byte length)
 	{
 		string str = CharArrayToString(message, length);
-		System.Console.WriteLine("Message (length: " + length + "): \"" + str + "\"");
+		Console.WriteLine("Message (length: " + length + "): \"" + str + "\"");
 	}
 
 	static void Main()
@@ -42,12 +43,15 @@ class Example
 
 		// Register read callback to function ReadCB
 		rs232.ReadCallback += ReadCB;
+
+		// Enable read callback
 		rs232.EnableReadCallback();
 
+		// Write "test" string
 		rs232.Write(StringToCharArray("test"), 4);
 
-		System.Console.WriteLine("Press enter to exit");
-		System.Console.ReadLine();
+		Console.WriteLine("Press enter to exit");
+		Console.ReadLine();
 		ipcon.Disconnect();
 	}
 }

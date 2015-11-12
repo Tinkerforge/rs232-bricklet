@@ -54,23 +54,26 @@
                 var rs232 = new Tinkerforge.BrickletRS232(UID, ipcon); // Create device object
                 ipcon.connect(HOST, PORT,
                     function(error) {
-                        textArea.value += 'Error: '+error+ '\n';
+                        textArea.value += 'Error: ' + error + '\n';
                     }
                 ); // Connect to brickd
                 // Don't use device before ipcon is connected
 
                 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
-                    function(connectReason) {
+                    function (connectReason) {
+                        // Enable read callback
                         rs232.enableReadCallback();
 
+                        // Write "test" string
                         var message = 'test';
                         rs232.write(stringToCharArray(message), message.length);
                     }
                 );
-                // Register callback
+
+                // Register read callback
                 rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ_CALLBACK,
                     // Callback function for read callback
-                    function(message, len) {
+                    function (message, len) {
                         var str = charArrayToString(message, len);
                         textArea.value += 'Message (length: ' + len + '): "' + str + '"\n';
                     }
