@@ -10,7 +10,7 @@ function matlab_example_loopback()
     UID = 'XYZ'; % Change to your UID
 
     ipcon = IPConnection(); % Create IP connection
-    rs232 = BrickletRS232(UID, ipcon); % Create device object
+    rs232 = handle(BrickletRS232(UID, ipcon), 'CallbackProperties'); % Create device object
 
     ipcon.connect(HOST, PORT); % Connect to brickd
     % Don't use device before ipcon is connected
