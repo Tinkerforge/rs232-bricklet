@@ -1,9 +1,9 @@
-2.0.0:
+2015-07-27: 2.0.0 (45414d7)
 - Initial version
 
-2.0.1:
+2015-08-18: 2.0.1 (220ffda)
 - Make reading of RHR register more efficient
 - Add callbacks for overrun, framing and parity errors
 
-2.0.2:
+2015-09-08: 2.0.2 (2ea5313)
 - Add support for break condition
