@@ -25,7 +25,7 @@ Module ExampleLoopback
     ' Callback subroutine for read callback
     Sub ReadCB(ByVal sender As BrickletRS232, ByVal message As Char(), ByVal length As Byte)
         Dim str as String = CharArrayToString(message, length)
-        Console.WriteLine("message (length: {0}): '{1}'", length, str)
+        Console.WriteLine("Message (Length: {0}): '{1}'", length, str)
     End Sub
 
     Sub Main()

@@ -38,7 +38,7 @@ sub cb_read
     my ($message, $length) = @_;
 
     my $str = char_array_to_string($message, $length);
-    print "Message (length: " . $length . "): \"" . $str . "\"\n";
+    print "Message (Length: " . $length . "): \"" . $str . "\"\n";
 }
 
 my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection

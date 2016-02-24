@@ -30,7 +30,7 @@ class Example
 	static void ReadCB(BrickletRS232 sender, char[] message, byte length)
 	{
 		string str = CharArrayToString(message, length);
-		Console.WriteLine("Message (length: " + length + "): \"" + str + "\"");
+		Console.WriteLine("Message (Length: " + length + "): \"" + str + "\"");
 	}
 
 	static void Main()

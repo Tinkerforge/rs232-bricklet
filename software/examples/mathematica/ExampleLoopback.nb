@@ -3,10 +3,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[         0,          0]
-NotebookDataLength[      8874,        197]
-NotebookOptionsPosition[      8441,        176]
-NotebookOutlinePosition[      8779,        191]
-CellTagsIndexPosition[      8736,        188]
+NotebookDataLength[      8920,        197]
+NotebookOptionsPosition[      8487,        176]
+NotebookOutlinePosition[      8825,        191]
+CellTagsIndexPosition[      8782,        188]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -39,8 +39,8 @@ Cell[BoxData[
    RowBox[{"port", "=", "4223"}], "\n", 
    RowBox[{"uid", "=", "\"\<XYZ\>\""}], 
    RowBox[{"(*", 
-    RowBox[{"Change", " ", "to", " ", "your", " ", "UID"}], "*)"}], 
-   "\[IndentingNewLine]", "\n", 
+    RowBox[{"Change", " ", "to", " ", "your", " ", "UID"}], "*)"}], "\n", 
+   "\[IndentingNewLine]", 
    RowBox[{"(*", 
     RowBox[{
     "Create", " ", "IPConnection", " ", "and", " ", "device", " ", "object"}],
@@ -54,7 +54,7 @@ Cell[BoxData[
      "]"}]}], "\n", 
    RowBox[{"ipcon", "@", 
     RowBox[{"Connect", "[", 
-     RowBox[{"host", ",", "port"}], "]"}]}], "\[IndentingNewLine]", "\n", 
+     RowBox[{"host", ",", "port"}], "]"}]}], "\n", "\[IndentingNewLine]", 
    RowBox[{"(*", 
     RowBox[{
      RowBox[{
@@ -71,19 +71,19 @@ Cell[BoxData[
    RowBox[{"(*", 
     RowBox[{
     "Assume", " ", "that", " ", "the", " ", "message", " ", "consists", " ", 
-     "of", " ", "ASCII", " ", "characters", " ", "and"}], "*)"}], 
-   "\[IndentingNewLine]", 
+     "of", " ", "ASCII", " ", "characters", " ", "and"}], "*)"}], "\n", 
    RowBox[{"(*", 
     RowBox[{
     "convert", " ", "it", " ", "from", " ", "an", " ", "array", " ", "of", 
-     " ", "chars", " ", "to", " ", "a", " ", "string"}], "*)"}], "\n", 
+     " ", "chars", " ", "to", " ", "a", " ", "string"}], "*)"}], 
+   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"CharListToString", "[", 
      RowBox[{"message_", ",", "length_"}], "]"}], ":=", 
     RowBox[{"StringTake", "[", 
      RowBox[{
       RowBox[{"FromCharacterCode", "[", "message", "]"}], ",", "length"}], 
-     "]"}]}], "\[IndentingNewLine]", "\n", 
+     "]"}]}], "\n", "\[IndentingNewLine]", 
    RowBox[{"(*", 
     RowBox[{
     "Callback", " ", "function", " ", "for", " ", "read", " ", "callback"}], 
@@ -93,20 +93,20 @@ Cell[BoxData[
      RowBox[{"sender_", ",", "message_", ",", "length_"}], "]"}], ":=", 
     "\[IndentingNewLine]", 
     RowBox[{"Print", "[", 
-     RowBox[{"\"\<Message (length: \>\"", "<>", 
+     RowBox[{"\"\<Message (Length: \>\"", "<>", 
       RowBox[{"ToString", "[", 
        RowBox[{"N", "[", "length", "]"}], "]"}], "<>", "\"\<): \>\"", "<>", 
       RowBox[{"CharListToString", "[", 
        RowBox[{"message", ",", "length"}], "]"}]}], "]"}]}], "\n", 
    RowBox[{"AddEventHandler", "[", 
     RowBox[{
-     RowBox[{"rs232", "@", "ReadCallback"}], ",", "ReadCB"}], "]"}], "\n", 
-   "\[IndentingNewLine]", 
+     RowBox[{"rs232", "@", "ReadCallback"}], ",", "ReadCB"}], "]"}], 
+   "\[IndentingNewLine]", "\n", 
    RowBox[{"(*", 
     RowBox[{"Enable", " ", "read", " ", "callback"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"rs232", "@", 
-    RowBox[{"EnableReadCallback", "[", "]"}]}], "\n", "\[IndentingNewLine]", 
+    RowBox[{"EnableReadCallback", "[", "]"}]}], "\[IndentingNewLine]", "\n", 
    RowBox[{"(*", 
     RowBox[{"Write", " ", "\"\<test\>\"", " ", "string"}], "*)"}], 
    "\[IndentingNewLine]", 
@@ -124,8 +124,8 @@ Cell[BoxData[
       RowBox[{"StringToCharList", "[", "message", "]"}], ",", 
       RowBox[{"StringLength", "[", "message", "]"}]}], "]"}]}], "\n", 
    "\[IndentingNewLine]", 
-   RowBox[{"Input", "[", "\"\<Click OK to exit\>\"", "]"}], "\n", 
-   "\[IndentingNewLine]", 
+   RowBox[{"Input", "[", "\"\<Click OK to exit\>\"", "]"}], 
+   "\[IndentingNewLine]", "\n", 
    RowBox[{"(*", 
     RowBox[{"Clean", " ", "up"}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{"ipcon", "@", 
@@ -172,10 +172,10 @@ Cell[BoxData[
    3.643714442365982*^9, 3.643714444487204*^9}, {3.643714487894384*^9, 
    3.643714543414875*^9}, {3.643714615364472*^9, 3.643714615569339*^9}, {
    3.643717109239092*^9, 3.643717113762582*^9}, {3.656331636317403*^9, 
-   3.65633164565438*^9}}]
+   3.65633164565438*^9}, {3.664802304499866*^9, 3.664802323107382*^9}}]
 },
 WindowSize->{1521, 867},
-WindowMargins->{{Automatic, 96}, {Automatic, 28}},
+WindowMargins->{{Automatic, 95}, {Automatic, 24}},
 FrontEndVersion->"9.0 for Linux x86 (64-bit) (November 20, 2012)",
 StyleDefinitions->"Default.nb"
 ]
@@ -191,7 +191,7 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[400, 13, 776, 13, 55, "Input"],
-Cell[1179, 28, 7258, 146, 825, "Input"]
+Cell[1179, 28, 7304, 146, 825, "Input"]
 }
 ]
 *)

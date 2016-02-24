@@ -33,7 +33,7 @@ public class ExampleLoopback {
 		rs232.addReadCallbackListener(new BrickletRS232.ReadCallbackListener() {
 			public void readCallback(char[] message, short length) {
 				String str = charArrayToString(message, length);
-				System.out.println("Message (length: " + length + "): \"" + str + "\"");
+				System.out.println("Message (Length: " + length + "): \"" + str + "\"");
 			}
 		});
 

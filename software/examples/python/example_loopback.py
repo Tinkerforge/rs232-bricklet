@@ -24,7 +24,7 @@ def char_list_to_string(message, length):
 # Callback function for read callback
 def cb_read(message, length):
     s = char_list_to_string(message, length)
-    print('Message (length: ' + str(length) + '): "' + s + '"')
+    print('Message (Length: ' + str(length) + '): "' + s + '"')
 
 if __name__ == "__main__":
     ipcon = IPConnection() # Create IP connection

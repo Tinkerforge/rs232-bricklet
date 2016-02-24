@@ -21,7 +21,7 @@ CharListToString[message_,length_]:=StringTake[FromCharacterCode[message],length
 
 (*Callback function for read callback *)
 ReadCB[sender_,message_,length_]:=
- Print["Message (length: "<>ToString[N[length]]<>"): "<>
+ Print["Message (Length: "<>ToString[N[length]]<>"): "<>
        CharListToString[message,length]]
 AddEventHandler[rs232@ReadCallback,ReadCB]
 

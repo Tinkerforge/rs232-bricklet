@@ -52,7 +52,7 @@ function cb_read(e)
     message = java_invoke("java.util.Arrays", "copyOf", e.message, e.length);
     len = java2int(e.length)
 
-    fprintf("Message (length: %d): \"%s\"\n", len, chars2string(e.message, len));
+    fprintf("Message (Length: %d): \"%s\"\n", len, chars2string(e.message, len));
 end
 
 function int = java2int(value)

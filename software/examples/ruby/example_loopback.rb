@@ -33,7 +33,7 @@ ipcon.connect HOST, PORT # Connect to brickd
 
 # Register read callback
 rs232.register_callback(BrickletRS232::CALLBACK_READ_CALLBACK) do |message, length|
-  puts "Message (length #{length}): #{char_array_to_string message, length}"
+  puts "Message (Length: #{length}): #{char_array_to_string message, length}"
 end
 
 # Enable read callback

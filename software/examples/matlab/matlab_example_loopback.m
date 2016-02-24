@@ -30,7 +30,7 @@ end
 
 % Callback function for read callback
 function cb_read(e)
-    fprintf('Message (length: %g): %s\n', e.length, e.message);
+    fprintf('Message (Length: %g): %s\n', e.length, e.message);
 end
 
 % Convert string to array of length 60 as needed by write

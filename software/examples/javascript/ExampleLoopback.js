@@ -50,7 +50,7 @@ rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ_CALLBACK,
     // Callback function for read callback
     function (message, length) {
         var str = charArrayToString(message, length);
-        console.log('Message (length: ' + length + '): "' + str + '"');
+        console.log('Message (Length: ' + length + '): "' + str + '"');
     }
 );
 

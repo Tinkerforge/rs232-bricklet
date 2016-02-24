@@ -31,7 +31,7 @@ var
 procedure TExample.ReadCB(sender: TBrickletRS232;
                           const msg: TArray0To59OfChar; const len: byte);
 begin
-  WriteLn(Format('Message (length %d): "%s"', [len, Copy(msg, 0, len)]));
+  WriteLn(Format('Message (Length %d): "%s"', [len, Copy(msg, 0, len)]));
 end;
 
 procedure TExample.Execute;

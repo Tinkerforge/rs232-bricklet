@@ -36,7 +36,7 @@ function charArrayToString($message, $length)
 function cb_read($message, $length)
 {
     $str = charArrayToString($message, $length);
-    echo "Message (length: " . $length . "): \"" . $str . "\"\n";
+    echo "Message (Length: " . $length . "): \"" . $str . "\"\n";
 }
 
 $ipcon = new IPConnection(); // Create IP connection
