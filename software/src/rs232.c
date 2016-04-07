@@ -150,6 +150,7 @@ void sc16is740_reconfigure(void) {
 
 		// Write 0xBF to LCR to be able to access EFR
 		sc16is740_write_register(I2C_INTERNAL_ADDRESS_LCR, 0xBF);
+
 		// Enable or Disable Hardware Flow Control
 		sc16is740_write_register(I2C_INTERNAL_ADDRESS_EFR, hardware_flowcontrol[BC->hardware_flowcontrol] | software_flowcontrol[BC->software_flowcontrol]);
 
@@ -177,7 +178,9 @@ void sc16is740_reconfigure(void) {
 void sc16is740_init(void) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		BA->bricklet_select(BS->port - 'a');
-		sc16is740_write_register(I2C_INTERNAL_ADDRESS_FCR, (1 << 0));
+
+		// Enable RX and TX FIFOs: FCR[0] = 1
+		sc16is740_write_register(I2C_INTERNAL_ADDRESS_FCR, 1 << 0);
 
 		// Enable Receive Holding Register Interrupt: IER[0] = 1
 		sc16is740_write_register(I2C_INTERNAL_ADDRESS_IER, 1 << 0);
