@@ -55,6 +55,7 @@ int main(void) {
 
 	printf("Press key to exit\n");
 	getchar();
+	rs232_destroy(&rs232);
 	ipcon_destroy(&ipcon); // Calls ipcon_disconnect internally
 	return 0;
 }
