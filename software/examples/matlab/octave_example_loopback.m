@@ -47,7 +47,7 @@ function string = chars2string(chars, len)
     end
 end
 
-% Callback function for illuminance callback (parameter has unit Lux/10)
+% Callback function for read callback
 function cb_read(e)
     message = java_invoke("java.util.Arrays", "copyOf", e.message, e.length);
     len = java2int(e.length)
