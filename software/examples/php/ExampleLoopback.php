@@ -10,7 +10,7 @@ use Tinkerforge\BrickletRS232;
 
 const HOST = 'localhost';
 const PORT = 4223;
-const UID = 'XYZ'; // Change to your UID
+const UID = 'XYZ'; // Change XYZ to the UID of your RS232 Bricklet
 
 // Convert string to char array with length 60, as needed by write
 function stringToCharArray($message)

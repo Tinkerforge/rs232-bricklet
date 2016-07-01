@@ -7,7 +7,7 @@ class Example
 {
 	private static string HOST = "localhost";
 	private static int PORT = 4223;
-	private static string UID = "XYZ"; // Change to your UID
+	private static string UID = "XYZ"; // Change XYZ to the UID of your RS232 Bricklet
 
 	// Convert message to array of length 60 as needed by write
 	static char[] StringToCharArray(string message)

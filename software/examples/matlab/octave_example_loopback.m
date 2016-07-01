@@ -3,7 +3,7 @@ function octave_example_loopback()
 
     HOST = "localhost";
     PORT = 4223;
-    UID = "XYZ"; % Change to your UID
+    UID = "XYZ"; % Change XYZ to the UID of your RS232 Bricklet
 
     ipcon = java_new("com.tinkerforge.IPConnection"); % Create IP connection
     rs232 = java_new("com.tinkerforge.BrickletRS232", UID, ipcon); % Create device object

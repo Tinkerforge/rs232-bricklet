@@ -10,7 +10,7 @@ include Tinkerforge
 
 HOST = 'localhost'
 PORT = 4223
-UID = 'XYZ' # Change to your UID
+UID = 'XYZ' # Change XYZ to the UID of your RS232 Bricklet
 
 # Convert string to char array with length 60, as needed by write
 def string_to_char_array(message)

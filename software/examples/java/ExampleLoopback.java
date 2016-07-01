@@ -7,7 +7,9 @@ import com.tinkerforge.BrickletRS232;
 public class ExampleLoopback {
 	private static final String HOST = "localhost";
 	private static final int PORT = 4223;
-	private static final String UID = "XYZ"; // Change to your UID
+
+	// Change XYZ to the UID of your RS232 Bricklet
+	private static final String UID = "XYZ";
 
 	// Convert string to array of length 60 as needed by write
 	public static char[] stringToCharArray(String message) {

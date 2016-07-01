@@ -6,7 +6,7 @@ Imports Tinkerforge
 Module ExampleLoopback
     Const HOST As String = "localhost"
     Const PORT As Integer = 4223
-    Const UID As String = "XYZ" ' Change to your UID
+    Const UID As String = "XYZ" ' Change XYZ to the UID of your RS232 Bricklet
 
     ' Convert message to array of length 60 as needed by write
     Function StringToCharArray(ByVal message As String) As Char()
