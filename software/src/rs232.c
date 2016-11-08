@@ -277,6 +277,8 @@ bool try_read_data(void) {
 		}
 
 		for(uint8_t i = 0; i < length; i++) {
+			// We don't have to check return value here, sc16is740_read_fifo
+			// already made sure that there is enough space in the buffer.
 			new_char_out(buffer[i]);
 		}
 		return true;
