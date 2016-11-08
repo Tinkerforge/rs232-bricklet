@@ -91,7 +91,7 @@ uint8_t sc16is740_read_fifo(uint8_t *data) {
 	uint8_t rxlvl = sc16is740_read_register(I2C_INTERNAL_ADDRESS_RXLVL);
 	length = MIN(length, rxlvl);
 
-	if(length < 0) {
+	if(length <= 0) {
 		return 0;
 	}
 
