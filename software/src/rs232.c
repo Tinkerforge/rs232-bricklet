@@ -305,11 +305,11 @@ void tick(const uint8_t tick_type) {
 
 
 		if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
-			bool is_try_read = try_read_data()
-			bool is_size     = size_in() > 0
+			bool is_try_read = try_read_data();
+			bool is_size     = size_in() > 0;
 			if(is_try_read || is_size) {
 				BA->bricklet_select(BS->port - 'a');
-				if(try_read) {
+				if(is_try_read) {
 					// If we have read something, lets look if there was an error.
 					const uint8_t lsr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LSR);
 					if(lsr & (1 << 1)) {
