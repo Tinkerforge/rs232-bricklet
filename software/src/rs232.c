@@ -305,36 +305,40 @@ void tick(const uint8_t tick_type) {
 
 
 		if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
-			BA->bricklet_select(BS->port - 'a');
-			if(try_read_data()) {
-				// If we have read something, lets look if there was an error.
-				const uint8_t lsr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LSR);
-				if(lsr & (1 << 1)) {
-					BC->error |= (1 << 0);
-				}
-				if(lsr & (1 << 2)) {
-					BC->error |= (1 << 1);
-				}
-				if(lsr & (1 << 3)) {
-					BC->error |= (1 << 2);
-				}
-			}
-
-			// Use txlvl - 1 here, there may be a byte free in the FIFO, but the
-			// THR is already full. In this case we would get an overflow if we
-			// would write again!
-			if(size_in() > 0) {
-				int8_t txlvl = sc16is740_read_register(I2C_INTERNAL_ADDRESS_TXLVL) - 1;
-				while((txlvl > 0) && (size_in() > 0)) {
-					char c;
-					if(get_char_in(&c)) {
-						sc16is740_write_register(I2C_INTERNAL_ADDRESS_THR, c);
+			bool is_try_read = try_read_data()
+			bool is_size     = size_in() > 0
+			if(is_try_read || is_size) {
+				BA->bricklet_select(BS->port - 'a');
+				if(try_read) {
+					// If we have read something, lets look if there was an error.
+					const uint8_t lsr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LSR);
+					if(lsr & (1 << 1)) {
+						BC->error |= (1 << 0);
 					}
-					txlvl--;
+					if(lsr & (1 << 2)) {
+						BC->error |= (1 << 1);
+					}
+					if(lsr & (1 << 3)) {
+						BC->error |= (1 << 2);
+					}
 				}
-			}
 
-			BA->bricklet_deselect(BS->port - 'a');
+				// Use txlvl - 1 here, there may be a byte free in the FIFO, but the
+				// THR is already full. In this case we would get an overflow if we
+				// would write again!
+				if(is_size) {
+					int8_t txlvl = sc16is740_read_register(I2C_INTERNAL_ADDRESS_TXLVL) - 1;
+					while((txlvl > 0) && (size_in() > 0)) {
+						char c;
+						if(get_char_in(&c)) {
+							sc16is740_write_register(I2C_INTERNAL_ADDRESS_THR, c);
+						}
+						txlvl--;
+					}
+				}
+
+				BA->bricklet_deselect(BS->port - 'a');
+			}
 			BA->mutex_give(*BA->mutex_twi_bricklet);
 		}
 	}
