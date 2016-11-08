@@ -268,8 +268,12 @@ bool get_char_in(char *c) {
 	return false;
 }
 
+bool is_irq(void) {
+	return (!(PIN_NIRQ.pio->PIO_PDSR & PIN_NIRQ.mask)) && (size_out() < (BUFFER_SIZE-1));
+}
+
 bool try_read_data(void) {
-	while((!(PIN_NIRQ.pio->PIO_PDSR & PIN_NIRQ.mask)) && (size_out() < (BUFFER_SIZE-1) )) {
+	while(is_irq()) {
 		uint8_t buffer[59];
 		uint8_t length = sc16is740_read_fifo(buffer);
 		if(length == 0) {
@@ -305,11 +309,12 @@ void tick(const uint8_t tick_type) {
 
 
 		if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
-			bool is_try_read = try_read_data();
-			bool is_size     = size_in() > 0;
+			const bool is_try_read = is_irq();
+			const bool is_size     = size_in() > 0;
 			if(is_try_read || is_size) {
 				BA->bricklet_select(BS->port - 'a');
 				if(is_try_read) {
+					try_read_data();
 					// If we have read something, lets look if there was an error.
 					const uint8_t lsr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LSR);
 					if(lsr & (1 << 1)) {
