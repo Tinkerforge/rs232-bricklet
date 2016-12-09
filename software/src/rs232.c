@@ -163,8 +163,8 @@ void sc16is740_reconfigure(void) {
 		lcr |= 1 << 7; // Divisor latch enable: LCR[7] = 1
 		sc16is740_write_register(I2C_INTERNAL_ADDRESS_LCR, lcr);
 
-		sc16is740_write_register(I2C_INTERNAL_ADDRESS_DLL, baudrates[BC->baudrate]);
-		sc16is740_write_register(I2C_INTERNAL_ADDRESS_DLH, 0);
+		sc16is740_write_register(I2C_INTERNAL_ADDRESS_DLL, baudrates[BC->baudrate]&0xFF);
+        sc16is740_write_register(I2C_INTERNAL_ADDRESS_DLH, (baudrates[BC->baudrate]>>8)&0xFF);
 
 		lcr = sc16is740_read_register(I2C_INTERNAL_ADDRESS_LCR);
 		lcr &= ~(1 << 7); // Divisor latch disable: LCR[7] = 0
