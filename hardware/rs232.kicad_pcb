@@ -1,4 +1,4 @@
-(kicad_pcb (version 4) (host pcbnew "(2015-03-18 BZR 5525)-product")
+(kicad_pcb (version 4) (host pcbnew 4.0.2+e4-6225~38~ubuntu15.10.1-stable)
 
   (general
     (links 68)
@@ -536,14 +536,14 @@
       (net 6 "Net-(C2-Pad2)"))
   )
 
-  (module 0603 (layer Vorderseite) (tedit 53F7061D) (tstamp 54F80B4F)
+  (module 0603 (layer Vorderseite) (tedit 586B537F) (tstamp 54F80B4F)
     (at 135.3 104.2 180)
     (path /5045D360)
     (attr smd)
     (fp_text reference R2 (at 0.05 0.225 180) (layer F.SilkS)
       (effects (font (size 0.2 0.2) (thickness 0.05)))
     )
-    (fp_text value 10k (at 0.05 -0.375 180) (layer F.SilkS)
+    (fp_text value 0 (at 0.05 -0.375 180) (layer F.SilkS)
       (effects (font (size 0.2 0.2) (thickness 0.05)))
     )
     (fp_line (start -1.45034 -0.65024) (end 1.45034 -0.65024) (layer F.SilkS) (width 0.001))
