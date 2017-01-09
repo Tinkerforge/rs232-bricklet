@@ -130,20 +130,6 @@ void sc16is740_write_register(const uint8_t address, uint8_t value) {
 	               NULL);
 }
 
-void sc16is740_reset(void) {
-	// Reset SC16IS740
-	PIN_NRESET.type = PIO_OUTPUT_0;
-	PIN_NRESET.attribute = PIO_DEFAULT;
-	BA->PIO_Configure(&PIN_NRESET, 1);
-
-	SLEEP_MS(5);
-
-	PIN_NRESET.type = PIO_OUTPUT_1;
-	BA->PIO_Configure(&PIN_NRESET, 1);
-
-	SLEEP_MS(100); // Wait for SC16IS740 initialization and clock stabilization
-}
-
 void sc16is740_reconfigure(void) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		BA->bricklet_select(BS->port - 'a');
@@ -198,6 +184,9 @@ void constructor(void) {
 	PIN_NIRQ.attribute = PIO_PULLUP;
 	BA->PIO_Configure(&PIN_NIRQ, 1);
 
+	// Always keep NRESET to high, with newer hardware versions
+	// NRESET is directly connected to VCC. This is necessary to
+	// prevent rare EMI problems that result in unexpected resets.
 	PIN_NRESET.type = PIO_OUTPUT_1;
 	PIN_NRESET.attribute = PIO_DEFAULT;
 	BA->PIO_Configure(&PIN_NRESET, 1);
@@ -214,7 +203,6 @@ void constructor(void) {
 	BC->error = 0;
 
 	read_configuration_from_eeprom();
-	sc16is740_reset();
 	sc16is740_init();
 	sc16is740_reconfigure();
 }
