@@ -46,7 +46,7 @@ $ipcon->connect(HOST, PORT); // Connect to brickd
 // Don't use device before ipcon is connected
 
 // Register read callback to function cb_read
-$rs232->registerCallback(BrickletRS232::CALLBACK_READ_CALLBACK, 'cb_read');
+$rs232->registerCallback(BrickletRS232::CALLBACK_READ, 'cb_read');
 
 // Enable read callback
 $rs232->enableReadCallback();

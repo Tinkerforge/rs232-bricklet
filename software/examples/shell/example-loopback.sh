@@ -4,7 +4,7 @@
 uid=XYZ # Change XYZ to the UID of your RS232 Bricklet
 
 # Handle incoming read callback
-tinkerforge dispatch rs232-bricklet $uid read-callback &
+tinkerforge dispatch rs232-bricklet $uid read &
 
 # Enable read callback
 tinkerforge call rs232-bricklet $uid enable-read-callback

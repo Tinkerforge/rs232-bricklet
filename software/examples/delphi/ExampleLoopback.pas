@@ -47,7 +47,7 @@ begin
   { Don't use device before ipcon is connected }
 
   { Register read callback to procedure ReadCB }
-  rs232.OnReadCallback := {$ifdef FPC}@{$endif}ReadCB;
+  rs232.OnRead := {$ifdef FPC}@{$endif}ReadCB;
 
   { Enable read callback }
   rs232.EnableReadCallback;

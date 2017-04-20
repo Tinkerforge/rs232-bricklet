@@ -71,7 +71,7 @@
                 );
 
                 // Register read callback
-                rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ_CALLBACK,
+                rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ,
                     // Callback function for read callback
                     function (message, len) {
                         var str = charArrayToString(message, len);

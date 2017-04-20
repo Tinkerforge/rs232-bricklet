@@ -12,7 +12,7 @@ function octave_example_loopback()
     % Don't use device before ipcon is connected
 
     % Register read callback to function cb_read
-    rs232.addReadCallbackCallback(@cb_read);
+    rs232.addReadCallback(@cb_read);
 
     % Enable read callback
     rs232.enableReadCallback();

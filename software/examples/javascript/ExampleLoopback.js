@@ -46,7 +46,7 @@ ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
 );
 
 // Register read callback
-rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ_CALLBACK,
+rs232.on(Tinkerforge.BrickletRS232.CALLBACK_READ,
     // Callback function for read callback
     function (message, length) {
         var str = charArrayToString(message, length);

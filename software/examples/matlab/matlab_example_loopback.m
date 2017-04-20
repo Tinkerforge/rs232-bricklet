@@ -16,7 +16,7 @@ function matlab_example_loopback()
     % Don't use device before ipcon is connected
 
     % Register read callback to function cb_read
-    set(rs232, 'ReadCallbackCallback', @(h, e) cb_read(e));
+    set(rs232, 'ReadCallback', @(h, e) cb_read(e));
 
     % Enable read callback
     rs232.enableReadCallback();

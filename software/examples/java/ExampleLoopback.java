@@ -32,8 +32,8 @@ public class ExampleLoopback {
 		// Don't use device before ipcon is connected
 
 		// Add read listener
-		rs232.addReadCallbackListener(new BrickletRS232.ReadCallbackListener() {
-			public void readCallback(char[] message, short length) {
+		rs232.addReadListener(new BrickletRS232.ReadListener() {
+			public void read(char[] message, short length) {
 				String str = charArrayToString(message, length);
 				System.out.println("Message (Length: " + length + "): \"" + str + "\"");
 			}
