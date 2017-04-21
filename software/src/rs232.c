@@ -390,7 +390,19 @@ void read(const ComType com, const Read *data) {
 
 	rr.header         = data->header;
 	rr.header.length  = sizeof(ReadReturn);
-	rr.length         = MIN(size_out(), MESSAGE_LENGTH);
+
+	if(BC->callback_enabled) {
+		/*
+		 * If read callback is enabled then calling the read() function always
+		 * returns zero data.
+		 */
+		rr.length = 0;
+		BA->send_blocking_with_timeout(&rr, sizeof(ReadReturn), com);
+
+		return;
+	}
+
+	rr.length = MIN(size_out(), MESSAGE_LENGTH);
 
 	for(uint8_t i = 0; i < rr.length; i++) {
 		rr.message[i] = BC->out[BC->out_start];
