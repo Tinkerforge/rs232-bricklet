@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# For this example connect the RX1 and TX pin to receive the send message
+
 HOST = "localhost"
 PORT = 4223
 UID = "XYZ" # Change XYZ to the UID of your RS232 Bricklet
 
 from tinkerforge.ip_connection import IPConnection
 from tinkerforge.bricklet_rs232 import BrickletRS232
-
-# For this example connect the RX1 and TX pin to receive the send message
 
 # Convert string to char array with length 60, as needed by write
 def string_to_char_list(message):

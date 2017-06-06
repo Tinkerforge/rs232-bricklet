@@ -1,13 +1,13 @@
 #include <stdio.h>
 
+// For this example connect the RX1 and TX pin to receive the send message
+
 #include "ip_connection.h"
 #include "bricklet_rs232.h"
 
 #define HOST "localhost"
 #define PORT 4223
 #define UID "XYZ" // Change XYZ to the UID of your RS232 Bricklet
-
-// For this example connect the RX1 and TX pin to receive the send message
 
 // Callback function for read callback
 void cb_read(char message[60], uint8_t length, void *user_data) {

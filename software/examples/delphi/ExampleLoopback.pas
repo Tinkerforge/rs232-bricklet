@@ -1,9 +1,9 @@
 program ExampleLoopback;
 
+{ For this example connect the RX1 and TX pin to receive the send message }
+
 {$ifdef MSWINDOWS}{$apptype CONSOLE}{$endif}
 {$ifdef FPC}{$mode OBJFPC}{$H+}{$endif}
-
-{ For this example connect the RX1 and TX pin to receive the send message }
 
 uses
   SysUtils, IPConnection, BrickletRS232;
@@ -27,7 +27,7 @@ const
 var
   e: TExample;
 
-{ Callback function for read callback }
+{ Callback procedure for read callback }
 procedure TExample.ReadCB(sender: TBrickletRS232;
                           const msg: TArray0To59OfChar; const len: byte);
 var str: string;

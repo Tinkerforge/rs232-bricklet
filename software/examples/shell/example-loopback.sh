@@ -1,9 +1,11 @@
 #!/bin/sh
 # Connects to localhost:4223 by default, use --host and --port to change this
 
+# For this example connect the RX1 and TX pin to receive the send message
+
 uid=XYZ # Change XYZ to the UID of your RS232 Bricklet
 
-# Handle incoming read callback
+# Handle incoming read callbacks
 tinkerforge dispatch rs232-bricklet $uid read &
 
 # Enable read callback

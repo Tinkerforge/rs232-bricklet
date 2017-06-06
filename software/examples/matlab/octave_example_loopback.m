@@ -1,6 +1,8 @@
 function octave_example_loopback()
     more off;
 
+    % For this example connect the RX1 and TX pin to receive the send message
+
     HOST = "localhost";
     PORT = 4223;
     UID = "XYZ"; % Change XYZ to the UID of your RS232 Bricklet
