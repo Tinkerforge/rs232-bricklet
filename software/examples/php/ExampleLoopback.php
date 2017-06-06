@@ -15,7 +15,7 @@ const UID = 'XYZ'; // Change XYZ to the UID of your RS232 Bricklet
 // Convert string to char array with length 60, as needed by write
 function stringToCharArray($message)
 {
-    $chars = str_split($message);
+    $chars = explode('', $message);
 
     while (sizeof($chars) < 60)
     {
@@ -52,7 +52,7 @@ $rs232->registerCallback(BrickletRS232::CALLBACK_READ, 'cb_read');
 $rs232->enableReadCallback();
 
 // Write "test" string
-$message = "test";
+$message = 'test';
 $rs232->write(stringToCharArray($message), strlen($message));
 
 echo "Press ctrl+c to exit\n";

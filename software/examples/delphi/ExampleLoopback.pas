@@ -30,8 +30,12 @@ var
 { Callback function for read callback }
 procedure TExample.ReadCB(sender: TBrickletRS232;
                           const msg: TArray0To59OfChar; const len: byte);
+var str: string;
 begin
-  WriteLn(Format('Message (Length: %d): "%s"', [len, Copy(msg, 0, len)]));
+  { Assume that the message consists of ASCII characters and
+    convert it from an array of chars to a string }
+  SetString(str, PAnsiChar(@msg[0]), len);
+  WriteLn(Format('Message (Length: %d): "%s"', [len, str]));
 end;
 
 procedure TExample.Execute;

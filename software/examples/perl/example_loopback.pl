@@ -14,7 +14,7 @@ sub string_to_char_array
 {
     my ($message) = @_;
 
-    my @chars = split("", $message);
+    my @chars = split('', $message);
     my @array = ("\0") x 60;
     for my $i (0..scalar(@chars)-1) {
         $array[$i] = $chars[$i];
@@ -29,7 +29,7 @@ sub char_array_to_string
 {
     my ($message, $length) = @_;
 
-    return substr(join("", @{$message}), 0, $length);
+    return substr(join('', @{$message}), 0, $length);
 }
 
 # Callback subroutine for read callback
@@ -54,7 +54,7 @@ $rs232->register_callback($rs232->CALLBACK_READ, 'cb_read');
 $rs232->enable_read_callback();
 
 # Write "test" string
-my @message = string_to_char_array("test");
+my @message = string_to_char_array('test');
 $rs232->write(@message, 4);
 
 print "Press key to exit\n";

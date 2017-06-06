@@ -24,16 +24,24 @@ function octave_example_loopback()
     ipcon.disconnect();
 end
 
+% Callback function for read callback
+function cb_read(e)
+    message = java_invoke("java.util.Arrays", "copyOf", e.message, e.length);
+    len = java2int(e.length)
+
+    fprintf("Message (Length: %d): \"%s\"\n", len, chars2string(e.message, len));
+end
+
 % Convert string to array of length 60 as needed by write
 function chars = string2chars(string)
     chars = javaArray("java.lang.String", 60);
 
     for i = 1:length(string)
-      chars(i) = substr(string, i, 1);
+        chars(i) = substr(string, i, 1);
     end
 
     for i = length(string)+1:60
-      chars(i) = "x";
+        chars(i) = "x";
     end
 end
 
@@ -43,16 +51,8 @@ function string = chars2string(chars, len)
     string = "";
 
     for i = 1:len
-      string = strcat(string, chars(i));
+        string = strcat(string, chars(i));
     end
-end
-
-% Callback function for read callback
-function cb_read(e)
-    message = java_invoke("java.util.Arrays", "copyOf", e.message, e.length);
-    len = java2int(e.length)
-
-    fprintf("Message (Length: %d): \"%s\"\n", len, chars2string(e.message, len));
 end
 
 function int = java2int(value)
