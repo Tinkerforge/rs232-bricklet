@@ -15,7 +15,7 @@ const UID = 'XYZ'; // Change XYZ to the UID of your RS232 Bricklet
 // Convert string to char array with length 60, as needed by write
 function stringToCharArray($message)
 {
-    $chars = explode('', $message);
+    $chars = str_split($message);
 
     while (sizeof($chars) < 60)
     {
