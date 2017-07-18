@@ -18,14 +18,13 @@ Module ExampleLoopback
     ' Assume that the message consists of ASCII characters and
     ' convert it from an array of chars to a string
     Function CharArrayToString(ByVal message As Char(), ByVal length As Byte) As String
-        Dim str as String = new String(message, 0, length)
-        Return str
+        Return new String(message, 0, length)
     End Function
 
     ' Callback subroutine for read callback
     Sub ReadCB(ByVal sender As BrickletRS232, ByVal message As Char(), ByVal length As Byte)
-        Dim str as String = CharArrayToString(message, length)
-        Console.WriteLine("Message (Length: " + length.ToString() + "): \"" + str + "\"")
+        Dim ascii as String = CharArrayToString(message, length)
+        Console.WriteLine("Message (Length: {0}): ""{1}""", length, ascii)
     End Sub
 
     Sub Main()
