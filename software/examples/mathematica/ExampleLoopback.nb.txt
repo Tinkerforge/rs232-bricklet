@@ -13,7 +13,7 @@ rs232=NETNew["Tinkerforge.BrickletRS232",uid,ipcon]
 ipcon@Connect[host,port]
 
 (*Convert string to char array with length 60,as needed by write*)
-StringToCharList[message_]:=PadRight[ToCharacterCode[message],60, 0]
+StringToCharList[message_]:=PadRight[ToCharacterCode[message],60,0]
 
 (*Assume that the message consists of ASCII characters and*)
 (*convert it from an array of chars to a string*)
@@ -29,9 +29,9 @@ AddEventHandler[rs232@ReadCallback,ReadCB]
 rs232@EnableReadCallback[]
 
 (*Write "test" string*)
-message:= "test"
+message:="test"
 (*FIXME: This call crashes Mono with a SIGSEGV, no clue why*)
-rs232@Write[StringToCharList[message], StringLength[message]]
+rs232@Write[StringToCharList[message],StringLength[message]]
 
 Input["Click OK to exit"]
 
