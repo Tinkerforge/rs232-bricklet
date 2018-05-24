@@ -2,6 +2,7 @@
 
 # For this example connect the RX1 and TX pin to receive the send message
 
+use strict;
 use Tinkerforge::IPConnection;
 use Tinkerforge::BrickletRS232;
 
