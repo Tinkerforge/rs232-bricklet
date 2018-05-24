@@ -11,12 +11,11 @@
 
 // Callback function for read callback
 void cb_read(char message[60], uint8_t length, void *user_data) {
-	char buffer[61]; // +1 for the NUL-terminator
-
 	(void)user_data; // avoid unused parameter warning
 
 	// Assume that the message consists of ASCII characters and
 	// convert it from an array of chars to a NUL-terminated string
+	char buffer[61]; // +1 for the NUL-terminator
 	memcpy(buffer, message, length);
 	buffer[length] = '\0';
 
