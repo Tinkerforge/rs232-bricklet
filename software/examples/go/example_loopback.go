@@ -2,8 +2,8 @@ package main
 
 import (
     "fmt"
-    "github.com/tinkerforge/go-api-bindings/ipconnection"
-    "github.com/tinkerforge/go-api-bindings/rs232_bricklet"
+    "github.com/Tinkerforge/go-api-bindings/ipconnection"
+    "github.com/Tinkerforge/go-api-bindings/rs232_bricklet"
 )
 
 // For this example connect the RX1 and TX pin to receive the send message
