@@ -1,0 +1,14 @@
+# For this example connect the RX1 and TX pin to receive the send message
+
+# Change XYZ to the UID of your RS232 Bricklet
+
+setup:
+	# Handle incoming read callbacks
+	subscribe to tinkerforge/callback/rs232_bricklet/XYZ/read # Received messages contain the message as string and it's length as int
+	publish '{"register": true}' to tinkerforge/register/rs232_bricklet/XYZ/read # Register read callback
+	
+	# Enable read callback
+	publish '' to tinkerforge/request/rs232_bricklet/XYZ/enable_read_callback 
+	
+	# Write "test" string
+	publish '{"message": "test", "length": 4}' to tinkerforge/request/rs232_bricklet/XYZ/write 
