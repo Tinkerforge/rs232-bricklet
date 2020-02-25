@@ -38,6 +38,10 @@
 #define FID_READ_CALLBACK            8
 #define FID_ERROR_CALLBACK           9
 #define FID_SET_BREAK_CONDITION      10
+#define FID_SET_FRAME_READABLE_CALLBACK_CONFIGURATION 11
+#define FID_GET_FRAME_READABLE_CALLBACK_CONFIGURATION 12
+#define FID_FRAME_READABLE_CALLBACK 13
+#define FID_READ_FRAME 14
 
 #define MESSAGE_LENGTH 60
 
@@ -123,7 +127,30 @@ typedef struct {
 	uint16_t break_time;
 } __attribute__((__packed__)) SetBreakCondition;
 
-void read(const ComType com, const Read *data);
+typedef struct {
+	MessageHeader header;
+	uint8_t frame_size;
+} __attribute__((__packed__)) SetFrameReadableCallbackConfiguration;
+
+typedef struct {
+	MessageHeader header;
+} __attribute__((__packed__)) GetFrameReadableCallbackConfiguration;
+
+typedef struct {
+	MessageHeader header;
+	uint8_t frame_size;
+} __attribute__((__packed__)) GetFrameReadableCallbackConfigurationReturn;
+
+typedef struct {
+	MessageHeader header;
+	uint8_t frame_count;
+} __attribute__((__packed__)) FrameReadableCallback;
+
+typedef struct {
+	MessageHeader header;
+} __attribute__((__packed__)) ReadFrame;
+
+void read(const ComType com, const Read *data, const uint8_t length);
 void write(const ComType com, const Write *data);
 void enable_read_callback(const ComType com, const EnableReadCallback *data);
 void disable_read_callback(const ComType com, const DisableReadCallback *data);
@@ -131,6 +158,8 @@ void is_read_callback_enabled(const ComType com, const IsReadCallbackEnabled *da
 void set_configuration(const ComType com, const SetConfiguration *data);
 void get_configuration(const ComType com, const GetConfiguration *data);
 void set_break_condition(const ComType com, const SetBreakCondition *data);
+void set_frame_readable_callback_configuration(const ComType com, const SetFrameReadableCallbackConfiguration *data);
+void get_frame_readable_callback_configuration(const ComType com, const GetFrameReadableCallbackConfiguration *data);
 
 
 #define I2C_EEPROM_ADDRESS_HIGH 84

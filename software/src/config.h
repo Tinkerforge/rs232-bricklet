@@ -34,7 +34,7 @@
 
 #define BRICKLET_FIRMWARE_VERSION_MAJOR 2
 #define BRICKLET_FIRMWARE_VERSION_MINOR 0
-#define BRICKLET_FIRMWARE_VERSION_REVISION 3
+#define BRICKLET_FIRMWARE_VERSION_REVISION 4
 
 #define BRICKLET_HARDWARE_VERSION_MAJOR 1
 #define BRICKLET_HARDWARE_VERSION_MINOR 0
@@ -62,7 +62,9 @@ typedef struct {
 	uint8_t out_end;
 
 	bool in_sync;
-	bool callback_enabled;
+	bool read_callback_enabled;
+	bool frame_readable_cb_already_sent;
+	uint8_t frame_readable_cb_frame_size;
 
 	uint8_t baudrate;
 	uint8_t parity;

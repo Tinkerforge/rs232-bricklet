@@ -191,7 +191,9 @@ void constructor(void) {
 	PIN_NRESET.attribute = PIO_DEFAULT;
 	BA->PIO_Configure(&PIN_NRESET, 1);
 
-	BC->callback_enabled = false;
+	BC->read_callback_enabled = false;
+	BC->frame_readable_cb_frame_size = 0;
+	BC->frame_readable_cb_already_sent = false;
 	BC->in_sync = true;
 
 	BC->baudrate = 11;
@@ -338,7 +340,7 @@ void tick(const uint8_t tick_type) {
 
 	if(tick_type & TICK_TASK_TYPE_MESSAGE) {
 		uint8_t length = size_out();
-		if(BC->callback_enabled && length > 0) {
+		if(BC->read_callback_enabled && length > 0) {
 			ReadCallback rc;
 			BA->com_make_default_header(&rc, BS->uid, sizeof(ReadCallback), FID_READ_CALLBACK);
 			rc.length = MIN(length, MESSAGE_LENGTH);
@@ -357,6 +359,16 @@ void tick(const uint8_t tick_type) {
 										   *BA->com_current);
 		}
 
+		if(BC->frame_readable_cb_frame_size > 0 && !BC->frame_readable_cb_already_sent && length >= BC->frame_readable_cb_frame_size) {
+			BC->frame_readable_cb_already_sent = true;
+			FrameReadableCallback fac;
+			BA->com_make_default_header(&fac, BS->uid, sizeof(FrameReadableCallback), FID_FRAME_READABLE_CALLBACK);
+			fac.frame_count = length / BC->frame_readable_cb_frame_size;
+			BA->send_blocking_with_timeout(&fac,
+										   sizeof(FrameReadableCallback),
+										   *BA->com_current);
+        }
+
 		if(BC->error != 0) {
 			ErrorCallback ec;
 			BA->com_make_default_header(&ec, BS->uid, sizeof(ErrorCallback), FID_ERROR_CALLBACK);
@@ -373,25 +385,28 @@ void tick(const uint8_t tick_type) {
 
 void invocation(const ComType com, const uint8_t *data) {
 	switch(((StandardMessage*)data)->header.fid) {
-		case FID_READ:                     read(com, (Read*)data); break;
-		case FID_WRITE:                    write(com, (Write*)data); break;
-		case FID_ENABLE_READ_CALLBACK:     enable_read_callback(com, (EnableReadCallback*)data); break;
-		case FID_DISABLE_READ_CALLBACK:    disable_read_callback(com, (DisableReadCallback*)data); break;
-		case FID_IS_READ_CALLBACK_ENABLED: is_read_callback_enabled(com, (IsReadCallbackEnabled*)data); break;
-		case FID_SET_CONFIGURATION:        set_configuration(com, (SetConfiguration*)data); break;
-		case FID_GET_CONFIGURATION:        get_configuration(com, (GetConfiguration*)data); break;
-		case FID_SET_BREAK_CONDITION:      set_break_condition(com, (SetBreakCondition*)data); break;
+		case FID_READ:                                      read(com, (Read*)data, MESSAGE_LENGTH); break;
+		case FID_WRITE:                                     write(com, (Write*)data); break;
+		case FID_ENABLE_READ_CALLBACK:                      enable_read_callback(com, (EnableReadCallback*)data); break;
+		case FID_DISABLE_READ_CALLBACK:                     disable_read_callback(com, (DisableReadCallback*)data); break;
+		case FID_IS_READ_CALLBACK_ENABLED:                  is_read_callback_enabled(com, (IsReadCallbackEnabled*)data); break;
+		case FID_SET_CONFIGURATION:                         set_configuration(com, (SetConfiguration*)data); break;
+		case FID_GET_CONFIGURATION:                         get_configuration(com, (GetConfiguration*)data); break;
+		case FID_SET_BREAK_CONDITION:                       set_break_condition(com, (SetBreakCondition*)data); break;
+		case FID_SET_FRAME_READABLE_CALLBACK_CONFIGURATION: set_frame_readable_callback_configuration(com, (SetFrameReadableCallbackConfiguration*)data); break;
+		case FID_GET_FRAME_READABLE_CALLBACK_CONFIGURATION: get_frame_readable_callback_configuration(com, (GetFrameReadableCallbackConfiguration*)data); break;
+		case FID_READ_FRAME:                                read(com, (Read*)data, BC->frame_readable_cb_frame_size);
 		default: BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_NOT_SUPPORTED, com); break;
 	}
 }
 
-void read(const ComType com, const Read *data) {
+void read(const ComType com, const Read *data, const uint8_t length) {
 	ReadReturn rr;
 
 	rr.header         = data->header;
 	rr.header.length  = sizeof(ReadReturn);
 
-	if(BC->callback_enabled) {
+	if(BC->read_callback_enabled) {
 		/*
 		 * If read callback is enabled then calling the read() function always
 		 * returns zero data.
@@ -402,7 +417,7 @@ void read(const ComType com, const Read *data) {
 		return;
 	}
 
-	rr.length = MIN(size_out(), MESSAGE_LENGTH);
+	rr.length = MIN(MIN(size_out(), MESSAGE_LENGTH), length);
 
 	for(uint8_t i = 0; i < rr.length; i++) {
 		rr.message[i] = BC->out[BC->out_start];
@@ -412,6 +427,8 @@ void read(const ComType com, const Read *data) {
 	for(uint8_t i = rr.length; i < MESSAGE_LENGTH; i++) {
 		rr.message[i] = 0;
 	}
+
+	BC->frame_readable_cb_already_sent = false;
 
 	BA->send_blocking_with_timeout(&rr, sizeof(ReadReturn), com);
 }
@@ -437,12 +454,13 @@ void write(const ComType com, const Write *data) {
 }
 
 void enable_read_callback(const ComType com, const EnableReadCallback *data) {
-	BC->callback_enabled = true;
+	BC->frame_readable_cb_frame_size = 0;
+	BC->read_callback_enabled = true;
 	BA->com_return_setter(com, data);
 }
 
 void disable_read_callback(const ComType com, const DisableReadCallback *data) {
-	BC->callback_enabled = false;
+	BC->read_callback_enabled = false;
 	BA->com_return_setter(com, data);
 }
 
@@ -451,7 +469,7 @@ void is_read_callback_enabled(const ComType com, const IsReadCallbackEnabled *da
 
 	ircer.header         = data->header;
 	ircer.header.length  = sizeof(IsReadCallbackEnabledReturn);
-	ircer.enabled        = BC->callback_enabled;
+	ircer.enabled        = BC->read_callback_enabled;
 
 	BA->send_blocking_with_timeout(&ircer, sizeof(IsReadCallbackEnabledReturn), com);
 }
@@ -510,6 +528,25 @@ void set_break_condition(const ComType com, const SetBreakCondition *data) {
 	}
 
 	BA->com_return_setter(com, data);
+}
+
+void set_frame_readable_callback_configuration(const ComType com, const SetFrameReadableCallbackConfiguration *data) {
+	if(data->frame_size != 0) {
+		BC->read_callback_enabled = false;
+	}
+	BC->frame_readable_cb_frame_size = data->frame_size;
+	BC->frame_readable_cb_already_sent = false;
+	BA->com_return_setter(com, data);
+}
+
+void get_frame_readable_callback_configuration(const ComType com, const GetFrameReadableCallbackConfiguration *data) {
+	GetFrameReadableCallbackConfigurationReturn gfrccr;
+
+	gfrccr.header               = data->header;
+	gfrccr.header.length        = sizeof(GetFrameReadableCallbackConfigurationReturn);
+	gfrccr.frame_size           = BC->frame_readable_cb_frame_size;
+
+	BA->send_blocking_with_timeout(&gfrccr, sizeof(GetFrameReadableCallbackConfigurationReturn), com);
 }
 
 void write_configuration_to_eeprom(void) {
