@@ -14,4 +14,4 @@
 
 2020-02-28: 2.0.4 (fc361a4)
 - Return empty message from read() if read callback is enabled
-- Add frame available callback and read frame function
+- Add frame readable callback and read frame function
