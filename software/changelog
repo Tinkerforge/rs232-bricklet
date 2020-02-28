@@ -11,3 +11,7 @@
 2017-01-09: 2.0.3 (671a4b2)
 - Fix Bug in baudrates below 4800 baud
 - Change RESET behavior to be compatible with new hardware version
+
+2020-02-28: 2.0.4 (<unknown>)
+- Return empty message from read() if read callback is enabled
+- Add frame available callback and read frame function
